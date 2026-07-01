@@ -1,4 +1,4 @@
-import { View, Text, TextInput, Pressable, StyleSheet, ScrollView } from 'react-native';
+import { View, Text, TextInput, Pressable, StyleSheet, ScrollView, Alert } from 'react-native';
 import Sheet from '../ui/Sheet';
 import { useAppStore } from '../../store/useAppStore';
 import { colors, spacing, radius, fontSize, fontWeight } from '../../utils/tokens';
@@ -26,19 +26,23 @@ export default function HarvestSheet({ seasonLegumes, bacs, onSave, onDelete, ac
 
   async function handleSave() {
     if (!canSave) return;
-    await onSave({
-      id: harvestEditId ?? `h_${Date.now()}`,
-      date: harvestForm.date,
-      legume_id: harvestForm.legume_id!,
-      qty: harvestForm.qty,
-      poids: harvestForm.poids ? Number(harvestForm.poids) : null,
-      longueur: harvestForm.longueur ? Number(harvestForm.longueur) : null,
-      variete: harvestForm.variete || null,
-      bac_id: harvestForm.bac_id || null,
-      notes: harvestForm.notes || null,
-      season_id: activeSeason,
-    });
-    closeHarvest();
+    try {
+      await onSave({
+        id: harvestEditId ?? `h_${Date.now()}`,
+        date: harvestForm.date,
+        legume_id: harvestForm.legume_id!,
+        qty: harvestForm.qty,
+        poids: harvestForm.poids ? Number(harvestForm.poids) : null,
+        longueur: harvestForm.longueur ? Number(harvestForm.longueur) : null,
+        variete: harvestForm.variete || null,
+        bac_id: harvestForm.bac_id || null,
+        notes: harvestForm.notes || null,
+        season_id: activeSeason,
+      });
+      closeHarvest();
+    } catch (e: any) {
+      Alert.alert('Erreur', e?.message ?? String(e));
+    }
   }
 
   async function handleDelete() {
@@ -149,15 +153,15 @@ export default function HarvestSheet({ seasonLegumes, bacs, onSave, onDelete, ac
       <Text style={styles.label}>Notes</Text>
       <TextInput style={[styles.input, styles.textarea]} value={harvestForm.notes} onChangeText={v => setHarvestForm({ notes: v })} placeholder="Une remarque sur cette récolte…" placeholderTextColor={colors.muted} multiline numberOfLines={2} />
 
+      <Pressable onPress={handleSave} style={[styles.saveBtn, !canSave && styles.saveBtnDisabled]}>
+        <Text style={styles.saveTxt}>{harvestEditId ? 'Enregistrer les modifications' : 'Valider la récolte'}</Text>
+      </Pressable>
+
       {harvestEditId && onDelete && (
         <Pressable onPress={handleDelete} style={styles.deleteBtn}>
           <Text style={styles.deleteTxt}>Supprimer cette récolte</Text>
         </Pressable>
       )}
-
-      <Pressable onPress={handleSave} style={[styles.saveBtn, !canSave && styles.saveBtnDisabled]}>
-        <Text style={styles.saveTxt}>{harvestEditId ? 'Enregistrer les modifications' : 'Valider la récolte'}</Text>
-      </Pressable>
     </Sheet>
   );
 }
