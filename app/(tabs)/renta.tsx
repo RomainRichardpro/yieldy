@@ -69,7 +69,7 @@ export default function RentaScreen() {
         {coutTotal === 0 && harvests.length === 0 ? (
           <>
             <EmptyState title="Pas encore de données" subtitle="Ajoute des investissements et enregistre des récoltes pour voir ta rentabilité" />
-            <Pressable onPress={() => openInvest()} style={styles.addBtn}>
+            <Pressable onPress={() => openInvest()} style={styles.addBtn} accessibilityRole="button" accessibilityLabel="Ajouter un investissement">
               <Text style={styles.addBtnTxt}>+ Ajouter un investissement</Text>
             </Pressable>
           </>
@@ -105,7 +105,7 @@ export default function RentaScreen() {
             {/* Investissements initiaux */}
             <View style={styles.sectionHeader}>
               <Text style={styles.h2}>Investissements initiaux</Text>
-              <Pressable onPress={() => openInvest('initial')} style={styles.addSmall}>
+              <Pressable onPress={() => openInvest('initial')} style={styles.addSmall} accessibilityRole="button" accessibilityLabel="Ajouter un investissement initial">
                 <Text style={styles.addSmallTxt}>+ Ajouter</Text>
               </Pressable>
             </View>
@@ -121,6 +121,8 @@ export default function RentaScreen() {
                     key={i.id}
                     onPress={() => openInvest('initial', i.id, { libelle: i.libelle, montant: String(i.montant) })}
                     style={styles.investRow}
+                    accessibilityRole="button"
+                    accessibilityLabel={`Modifier ${i.libelle}, ${i.montant} euros`}
                   >
                     <View style={styles.investIcon}><Text style={{ fontSize: 18 }}>🌱</Text></View>
                     <Text style={styles.investLabel}>{i.libelle}</Text>
@@ -137,7 +139,7 @@ export default function RentaScreen() {
             {/* Coûts récurrents */}
             <View style={[styles.sectionHeader, { marginTop: 22 }]}>
               <Text style={styles.h2}>Coûts récurrents</Text>
-              <Pressable onPress={() => openInvest('recurrent')} style={styles.addSmall}>
+              <Pressable onPress={() => openInvest('recurrent')} style={styles.addSmall} accessibilityRole="button" accessibilityLabel="Ajouter un coût récurrent">
                 <Text style={styles.addSmallTxt}>+ Ajouter</Text>
               </Pressable>
             </View>
@@ -153,6 +155,8 @@ export default function RentaScreen() {
                     key={i.id}
                     onPress={() => openInvest('recurrent', i.id, { libelle: i.libelle, montant: String(i.montant) })}
                     style={styles.investRow}
+                    accessibilityRole="button"
+                    accessibilityLabel={`Modifier ${i.libelle}, ${i.montant} euros`}
                   >
                     <View style={styles.investIcon}><Text style={{ fontSize: 18 }}>💧</Text></View>
                     <Text style={styles.investLabel}>{i.libelle}</Text>

@@ -79,6 +79,7 @@ export default function TabBar({ state, navigation }: Props) {
         onPress={() => openHarvest()}
         style={({ pressed }) => [styles.fab, pressed && styles.fabPressed]}
         accessibilityLabel="Nouvelle récolte"
+        accessibilityRole="button"
       >
         <View style={styles.fabBar} />
         <View style={styles.fabBarV} />
@@ -93,8 +94,9 @@ export default function TabBar({ state, navigation }: Props) {
               key={tab.name}
               onPress={() => navigation.navigate(tab.name)}
               style={styles.tabBtn}
-              accessibilityRole="button"
+              accessibilityRole="tab"
               accessibilityLabel={tab.label}
+              accessibilityState={{ selected: active }}
             >
               <tab.Icon active={active} />
               <Text style={[styles.tabLabel, active && styles.tabLabelActive]}>

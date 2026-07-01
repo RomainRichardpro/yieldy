@@ -24,7 +24,7 @@ export default function Sheet({ visible, onClose, children, scrollable = false }
   }, [visible]);
 
   return (
-    <Modal visible={visible} transparent animationType="none" onRequestClose={onClose} statusBarTranslucent>
+    <Modal visible={visible} transparent animationType="none" onRequestClose={onClose} statusBarTranslucent accessibilityViewIsModal={true}>
       <Pressable style={styles.backdrop} onPress={onClose}>
         <Animated.View style={[styles.sheet, { height: sheetHeight, transform: [{ translateY }] }]}>
           <View style={{ flex: 1 }} onStartShouldSetResponder={() => true}>

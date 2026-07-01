@@ -56,7 +56,7 @@ export default function HarvestSheet({ seasonLegumes, bacs, onSave, onDelete, ac
       {/* Header */}
       <View style={styles.header}>
         <Text style={styles.title}>{harvestEditId ? 'Modifier la récolte' : 'Nouvelle récolte'}</Text>
-        <Pressable onPress={closeHarvest} style={styles.closeBtn}>
+        <Pressable onPress={closeHarvest} style={styles.closeBtn} accessibilityLabel="Fermer" accessibilityRole="button">
           <Text style={styles.closeTxt}>✕</Text>
         </Pressable>
       </View>
@@ -86,6 +86,9 @@ export default function HarvestSheet({ seasonLegumes, bacs, onSave, onDelete, ac
                 key={l.id}
                 onPress={() => setHarvestForm({ legume_id: l.id })}
                 style={[styles.legChip, active && styles.legChipActive]}
+                accessibilityRole="radio"
+                accessibilityLabel={l.nom}
+                accessibilityState={{ checked: active }}
               >
                 <View style={[styles.legDot, { backgroundColor: l.color }]}>
                   <Text style={styles.legDotTxt}>{initial(l.nom)}</Text>
@@ -101,11 +104,11 @@ export default function HarvestSheet({ seasonLegumes, bacs, onSave, onDelete, ac
       <Text style={styles.sectionLabel}>Quantité</Text>
       <View style={styles.qtyRow}>
         <View style={styles.qtyControl}>
-          <Pressable onPress={() => incQty(-1)} style={styles.qtyBtn}>
+          <Pressable onPress={() => incQty(-1)} style={styles.qtyBtn} accessibilityLabel="Diminuer la quantité" accessibilityRole="button">
             <Text style={styles.qtyBtnTxt}>−</Text>
           </Pressable>
-          <Text style={styles.qtyValue}>{harvestForm.qty}</Text>
-          <Pressable onPress={() => incQty(1)} style={[styles.qtyBtn, styles.qtyBtnPlus]}>
+          <Text style={styles.qtyValue} accessibilityLabel={`${harvestForm.qty} unité${harvestForm.qty > 1 ? 's' : ''}`}>{harvestForm.qty}</Text>
+          <Pressable onPress={() => incQty(1)} style={[styles.qtyBtn, styles.qtyBtnPlus]} accessibilityLabel="Augmenter la quantité" accessibilityRole="button">
             <Text style={[styles.qtyBtnTxt, { color: '#fff' }]}>+</Text>
           </Pressable>
         </View>
@@ -121,18 +124,18 @@ export default function HarvestSheet({ seasonLegumes, bacs, onSave, onDelete, ac
       <View style={styles.row}>
         <View style={{ flex: 1 }}>
           <Text style={styles.label}>Poids (g)</Text>
-          <TextInput style={styles.input} value={harvestForm.poids} onChangeText={v => setHarvestForm({ poids: v })} placeholder="—" placeholderTextColor={colors.muted} keyboardType="numeric" />
+          <TextInput style={styles.input} value={harvestForm.poids} onChangeText={v => setHarvestForm({ poids: v })} placeholder="—" placeholderTextColor={colors.muted} keyboardType="numeric" accessibilityLabel="Poids en grammes" />
         </View>
         {showLong && (
           <View style={{ flex: 1 }}>
             <Text style={styles.label}>Longueur (cm)</Text>
-            <TextInput style={styles.input} value={harvestForm.longueur} onChangeText={v => setHarvestForm({ longueur: v })} placeholder="—" placeholderTextColor={colors.muted} keyboardType="numeric" />
+            <TextInput style={styles.input} value={harvestForm.longueur} onChangeText={v => setHarvestForm({ longueur: v })} placeholder="—" placeholderTextColor={colors.muted} keyboardType="numeric" accessibilityLabel="Longueur en centimètres" />
           </View>
         )}
       </View>
 
       <Text style={styles.label}>Variété</Text>
-      <TextInput style={styles.input} value={harvestForm.variete} onChangeText={v => setHarvestForm({ variete: v })} placeholder="ex : Coeur de boeuf" placeholderTextColor={colors.muted} />
+      <TextInput style={styles.input} value={harvestForm.variete} onChangeText={v => setHarvestForm({ variete: v })} placeholder="ex : Coeur de boeuf" placeholderTextColor={colors.muted} accessibilityLabel="Variété" />
 
       {bacs.length > 0 && (
         <>
@@ -141,7 +144,7 @@ export default function HarvestSheet({ seasonLegumes, bacs, onSave, onDelete, ac
             {bacs.map(b => {
               const active = harvestForm.bac_id === b.id;
               return (
-                <Pressable key={b.id} onPress={() => setHarvestForm({ bac_id: b.id })} style={[styles.bacChip, active && styles.legChipActive, { flex: 1 }]}>
+                <Pressable key={b.id} onPress={() => setHarvestForm({ bac_id: b.id })} style={[styles.bacChip, active && styles.legChipActive, { flex: 1 }]} accessibilityRole="radio" accessibilityLabel={b.nom} accessibilityState={{ checked: active }}>
                   <Text style={[styles.bacChipTxt, active && styles.legTxtActive]}>{b.nom}</Text>
                 </Pressable>
               );
@@ -151,14 +154,14 @@ export default function HarvestSheet({ seasonLegumes, bacs, onSave, onDelete, ac
       )}
 
       <Text style={styles.label}>Notes</Text>
-      <TextInput style={[styles.input, styles.textarea]} value={harvestForm.notes} onChangeText={v => setHarvestForm({ notes: v })} placeholder="Une remarque sur cette récolte…" placeholderTextColor={colors.muted} multiline numberOfLines={2} />
+      <TextInput style={[styles.input, styles.textarea]} value={harvestForm.notes} onChangeText={v => setHarvestForm({ notes: v })} placeholder="Une remarque sur cette récolte…" placeholderTextColor={colors.muted} multiline numberOfLines={2} accessibilityLabel="Notes" />
 
-      <Pressable onPress={handleSave} style={[styles.saveBtn, !canSave && styles.saveBtnDisabled]}>
+      <Pressable onPress={handleSave} style={[styles.saveBtn, !canSave && styles.saveBtnDisabled]} accessibilityRole="button" accessibilityLabel={harvestEditId ? 'Enregistrer les modifications' : 'Valider la récolte'} accessibilityState={{ disabled: !canSave }}>
         <Text style={styles.saveTxt}>{harvestEditId ? 'Enregistrer les modifications' : 'Valider la récolte'}</Text>
       </Pressable>
 
       {harvestEditId && onDelete && (
-        <Pressable onPress={handleDelete} style={styles.deleteBtn}>
+        <Pressable onPress={handleDelete} style={styles.deleteBtn} accessibilityRole="button" accessibilityLabel="Supprimer cette récolte">
           <Text style={styles.deleteTxt}>Supprimer cette récolte</Text>
         </Pressable>
       )}

@@ -120,7 +120,7 @@ export default function AccueilScreen() {
               const b = bacMap[h.bac_id ?? ''];
               if (!l) return null;
               return (
-                <Pressable key={h.id} onPress={() => openHarvest(h.id, { date: h.date, legume_id: h.legume_id, qty: h.qty, poids: h.poids ? String(h.poids) : '', longueur: h.longueur ? String(h.longueur) : '', variete: h.variete ?? '', bac_id: h.bac_id ?? null, notes: h.notes ?? '' })} style={styles.harvestRow}>
+                <Pressable key={h.id} onPress={() => openHarvest(h.id, { date: h.date, legume_id: h.legume_id, qty: h.qty, poids: h.poids ? String(h.poids) : '', longueur: h.longueur ? String(h.longueur) : '', variete: h.variete ?? '', bac_id: h.bac_id ?? null, notes: h.notes ?? '' })} style={styles.harvestRow} accessibilityRole="button" accessibilityLabel={`Modifier la récolte de ${legMap[h.legume_id]?.nom ?? 'légume'}`}>
                   <View style={[styles.badge, { backgroundColor: l.color }]}>
                     <Text style={styles.badgeTxt}>{initial(l.nom)}</Text>
                   </View>
@@ -136,7 +136,7 @@ export default function AccueilScreen() {
         )}
 
         {/* Add button */}
-        <Pressable onPress={() => openHarvest()} style={styles.addBtn}>
+        <Pressable onPress={() => openHarvest()} style={styles.addBtn} accessibilityRole="button" accessibilityLabel="Enregistrer une récolte">
           <Text style={styles.addBtnTxt}>+ Enregistrer une récolte</Text>
         </Pressable>
 

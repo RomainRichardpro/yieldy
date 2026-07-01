@@ -45,11 +45,11 @@ export default function ReglagesScreen() {
         <Text style={styles.sectionCap}>Saison active</Text>
         <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.chipRow}>
           {seasons.map(s => (
-            <Pressable key={s.id} onPress={async () => { await dbSetActiveSeason(s.id); await load(); }} style={[styles.seasonChip, activeSeason === s.id && styles.seasonChipActive]}>
+            <Pressable key={s.id} onPress={async () => { await dbSetActiveSeason(s.id); await load(); }} style={[styles.seasonChip, activeSeason === s.id && styles.seasonChipActive]} accessibilityRole="radio" accessibilityLabel={s.label} accessibilityState={{ checked: activeSeason === s.id }}>
               <Text style={[styles.seasonChipTxt, activeSeason === s.id && styles.seasonChipTxtActive]}>{s.label}</Text>
             </Pressable>
           ))}
-          <Pressable onPress={handleAddSeason} style={styles.addSeasonChip}>
+          <Pressable onPress={handleAddSeason} style={styles.addSeasonChip} accessibilityRole="button" accessibilityLabel="Nouvelle saison">
             <Text style={styles.addSeasonTxt}>+ Nouvelle</Text>
           </Pressable>
         </ScrollView>
@@ -57,7 +57,7 @@ export default function ReglagesScreen() {
 
         <View style={styles.sectionHeader}>
           <Text style={styles.h2}>Légumes</Text>
-          <Pressable onPress={() => openLegume()} style={styles.addBtn}><Text style={styles.addBtnTxt}>+</Text></Pressable>
+          <Pressable onPress={() => openLegume()} style={styles.addBtn} accessibilityRole="button" accessibilityLabel="Ajouter un légume"><Text style={styles.addBtnTxt}>+</Text></Pressable>
         </View>
         <Text style={styles.hint}>Active ceux de ton potager {activeSeason ? `Saison ${activeSeason}` : ''}</Text>
 
@@ -68,14 +68,14 @@ export default function ReglagesScreen() {
                 const on = seasonLegumeIds.includes(l.id);
                 return (
                   <View key={l.id} style={[styles.legumeRow, on && styles.legumeRowActive]}>
-                    <Pressable onPress={() => openLegume(l.id, { nom: l.nom, prix: String(l.prix), unite: l.unite, source: l.source ?? '', color: l.color, colorTouched: true })} style={styles.legumeInfo}>
+                    <Pressable onPress={() => openLegume(l.id, { nom: l.nom, prix: String(l.prix), unite: l.unite, source: l.source ?? '', color: l.color, colorTouched: true })} style={styles.legumeInfo} accessibilityRole="button" accessibilityLabel={`Modifier ${l.nom}`}>
                       <View style={[styles.badge, { backgroundColor: l.color, opacity: on ? 1 : 0.5 }]}><Text style={styles.badgeTxt}>{initial(l.nom)}</Text></View>
                       <View style={[styles.legumeMeta, { opacity: on ? 1 : 0.5 }]}>
                         <Text style={styles.legumeNom}>{l.nom}</Text>
                         <Text style={styles.legumeSub}>{fmt(l.prix)} / {l.unite}{l.source ? ` · ${l.source}` : ''}</Text>
                       </View>
                     </Pressable>
-                    <Switch value={on} onValueChange={async () => { if (!activeSeason) return; await toggleSeasonLegume(activeSeason, l.id); setSeasonLegumeIds(await getSeasonLegumeIds(activeSeason)); }} trackColor={{ false: colors.line, true: colors.green }} thumbColor="#fff" />
+                    <Switch value={on} onValueChange={async () => { if (!activeSeason) return; await toggleSeasonLegume(activeSeason, l.id); setSeasonLegumeIds(await getSeasonLegumeIds(activeSeason)); }} trackColor={{ false: colors.line, true: colors.green }} thumbColor="#fff" accessibilityLabel={`${l.nom} dans le potager`} accessibilityRole="switch" />
                   </View>
                 );
               })}
@@ -84,7 +84,7 @@ export default function ReglagesScreen() {
 
         <View style={styles.sectionHeader}>
           <Text style={styles.h2}>Bacs & zones</Text>
-          <Pressable onPress={() => openBac(undefined, undefined, bacs.length)} style={styles.addBtn}><Text style={styles.addBtnTxt}>+</Text></Pressable>
+          <Pressable onPress={() => openBac(undefined, undefined, bacs.length)} style={styles.addBtn} accessibilityRole="button" accessibilityLabel="Ajouter un bac"><Text style={styles.addBtnTxt}>+</Text></Pressable>
         </View>
 
         {bacs.length === 0
@@ -93,7 +93,7 @@ export default function ReglagesScreen() {
               {bacs.map(b => {
                 const contenuNoms = b.contenu.map(id => legumes.find(l => l.id === id)?.nom).filter(Boolean);
                 return (
-                  <Pressable key={b.id} onPress={() => openBac(b.id, { nom: b.nom, larg: String(b.larg), long: String(b.long), contenu: b.contenu })} style={styles.bacRow}>
+                  <Pressable key={b.id} onPress={() => openBac(b.id, { nom: b.nom, larg: String(b.larg), long: String(b.long), contenu: b.contenu })} style={styles.bacRow} accessibilityRole="button" accessibilityLabel={`Modifier le bac ${b.nom}`}>
                     <View style={styles.bacIcon}><Text style={{ fontSize: 18 }}>🪴</Text></View>
                     <View style={{ flex: 1 }}>
                       <Text style={styles.legumeNom}>{b.nom}</Text>

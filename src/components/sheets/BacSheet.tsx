@@ -38,7 +38,7 @@ export default function BacSheet({ seasonLegumes, onSave, onDelete }: Props) {
     <Sheet visible={bacOpen} onClose={closeBac} scrollable>
       <View style={styles.header}>
         <Text style={styles.title}>{bacEditId ? 'Modifier le bac' : 'Nouveau bac'}</Text>
-        <Pressable onPress={closeBac} style={styles.closeBtn}>
+        <Pressable onPress={closeBac} style={styles.closeBtn} accessibilityLabel="Fermer" accessibilityRole="button">
           <Text style={styles.closeTxt}>✕</Text>
         </Pressable>
       </View>
@@ -50,6 +50,7 @@ export default function BacSheet({ seasonLegumes, onSave, onDelete }: Props) {
         onChangeText={v => setBacForm({ nom: v })}
         placeholder="ex : Bac surélevé sud"
         placeholderTextColor={colors.muted}
+        accessibilityLabel="Nom du bac"
       />
 
       <View style={styles.row}>
@@ -62,6 +63,7 @@ export default function BacSheet({ seasonLegumes, onSave, onDelete }: Props) {
             placeholder="—"
             placeholderTextColor={colors.muted}
             keyboardType="numeric"
+            accessibilityLabel="Largeur en centimètres"
           />
         </View>
         <View style={{ flex: 1 }}>
@@ -73,6 +75,7 @@ export default function BacSheet({ seasonLegumes, onSave, onDelete }: Props) {
             placeholder="—"
             placeholderTextColor={colors.muted}
             keyboardType="numeric"
+            accessibilityLabel="Longueur en centimètres"
           />
         </View>
       </View>
@@ -88,6 +91,9 @@ export default function BacSheet({ seasonLegumes, onSave, onDelete }: Props) {
                   key={l.id}
                   onPress={() => toggleBacContenu(l.id)}
                   style={[styles.chip, on && styles.chipActive]}
+                  accessibilityRole="checkbox"
+                  accessibilityLabel={l.nom}
+                  accessibilityState={{ checked: on }}
                 >
                   <View style={[styles.dot, { backgroundColor: l.color }]}>
                     <Text style={styles.dotTxt}>{initial(l.nom)}</Text>
@@ -100,12 +106,12 @@ export default function BacSheet({ seasonLegumes, onSave, onDelete }: Props) {
         </>
       )}
 
-      <Pressable onPress={handleSave} style={[styles.saveBtn, !canSave && styles.saveBtnDisabled]}>
+      <Pressable onPress={handleSave} style={[styles.saveBtn, !canSave && styles.saveBtnDisabled]} accessibilityRole="button" accessibilityLabel="Enregistrer le bac" accessibilityState={{ disabled: !canSave }}>
         <Text style={styles.saveTxt}>Enregistrer</Text>
       </Pressable>
 
       {bacEditId && onDelete && (
-        <Pressable onPress={handleDelete} style={styles.deleteBtn}>
+        <Pressable onPress={handleDelete} style={styles.deleteBtn} accessibilityRole="button" accessibilityLabel="Supprimer ce bac">
           <Text style={styles.deleteTxt}>Supprimer ce bac</Text>
         </Pressable>
       )}

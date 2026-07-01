@@ -62,6 +62,9 @@ export default function JournalScreen() {
             <Pressable
               onPress={() => setFilterLegumeId(null)}
               style={[styles.chip, !filterLegumeId && styles.chipActive]}
+              accessibilityRole="radio"
+              accessibilityLabel="Tous les légumes"
+              accessibilityState={{ checked: !filterLegumeId }}
             >
               <Text style={[styles.chipTxt, !filterLegumeId && styles.chipTxtActive]}>Tous</Text>
             </Pressable>
@@ -70,6 +73,9 @@ export default function JournalScreen() {
                 key={l.id}
                 onPress={() => setFilterLegumeId(filterLegumeId === l.id ? null : l.id)}
                 style={[styles.chip, filterLegumeId === l.id && styles.chipActive, filterLegumeId === l.id && { borderColor: l.color }]}
+                accessibilityRole="radio"
+                accessibilityLabel={l.nom}
+                accessibilityState={{ checked: filterLegumeId === l.id }}
               >
                 <View style={[styles.chipDot, { backgroundColor: l.color }]} />
                 <Text style={[styles.chipTxt, filterLegumeId === l.id && styles.chipTxtActive]}>{l.nom}</Text>
@@ -100,6 +106,8 @@ export default function JournalScreen() {
                     key={h.id}
                     onPress={() => openHarvest(h.id, { date: h.date, legume_id: h.legume_id, qty: h.qty, poids: h.poids ? String(h.poids) : '', longueur: h.longueur ? String(h.longueur) : '', variete: h.variete ?? '', bac_id: h.bac_id ?? null, notes: h.notes ?? '' })}
                     style={styles.harvestRow}
+                    accessibilityRole="button"
+                    accessibilityLabel={`Modifier la récolte de ${legMap[h.legume_id]?.nom ?? 'légume'}`}
                   >
                     <View style={[styles.badge, { backgroundColor: l.color }]}>
                       <Text style={styles.badgeTxt}>{initial(l.nom)}</Text>

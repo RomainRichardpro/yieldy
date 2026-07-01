@@ -42,7 +42,7 @@ export default function LegumeSheet({ onSave, onDelete }: Props) {
       {/* Header */}
       <View style={styles.header}>
         <Text style={styles.title}>{legumeEditId ? 'Modifier le légume' : 'Nouveau légume'}</Text>
-        <Pressable onPress={closeLegume} style={styles.closeBtn}>
+        <Pressable onPress={closeLegume} style={styles.closeBtn} accessibilityLabel="Fermer" accessibilityRole="button">
           <Text style={styles.closeTxt}>✕</Text>
         </Pressable>
       </View>
@@ -55,6 +55,7 @@ export default function LegumeSheet({ onSave, onDelete }: Props) {
         onChangeText={onLegumeNom}
         placeholder="ex : Haricot vert"
         placeholderTextColor={colors.muted}
+        accessibilityLabel="Nom du légume"
       />
 
       {/* Prix */}
@@ -66,6 +67,7 @@ export default function LegumeSheet({ onSave, onDelete }: Props) {
         placeholder="0,00"
         placeholderTextColor={colors.muted}
         keyboardType="decimal-pad"
+        accessibilityLabel="Prix de référence en euros"
       />
 
       {/* Unité */}
@@ -76,6 +78,9 @@ export default function LegumeSheet({ onSave, onDelete }: Props) {
             key={u}
             onPress={() => setLegumeForm({ unite: u })}
             style={[styles.chip, legumeForm.unite === u && styles.chipActive]}
+            accessibilityRole="radio"
+            accessibilityLabel={u}
+            accessibilityState={{ checked: legumeForm.unite === u }}
           >
             <Text style={[styles.chipTxt, legumeForm.unite === u && styles.chipTxtActive]}>{u}</Text>
           </Pressable>
@@ -94,6 +99,9 @@ export default function LegumeSheet({ onSave, onDelete }: Props) {
               key={c}
               onPress={() => setLegumeForm({ color: c, colorTouched: true })}
               style={[styles.swatch, { backgroundColor: c }, legumeForm.color === c && styles.swatchActive]}
+              accessibilityRole="radio"
+              accessibilityLabel={`Couleur ${c}`}
+              accessibilityState={{ checked: legumeForm.color === c }}
             />
           ))}
         </View>
@@ -107,15 +115,16 @@ export default function LegumeSheet({ onSave, onDelete }: Props) {
         onChangeText={v => setLegumeForm({ source: v })}
         placeholder="ex : Leclerc"
         placeholderTextColor={colors.muted}
+        accessibilityLabel="Source du prix"
       />
 
       {/* Actions */}
-      <Pressable onPress={handleSave} style={[styles.saveBtn, !canSave && styles.saveBtnDisabled]}>
+      <Pressable onPress={handleSave} style={[styles.saveBtn, !canSave && styles.saveBtnDisabled]} accessibilityRole="button" accessibilityLabel="Enregistrer le légume" accessibilityState={{ disabled: !canSave }}>
         <Text style={styles.saveTxt}>Enregistrer</Text>
       </Pressable>
 
       {legumeEditId && onDelete && (
-        <Pressable onPress={handleDelete} style={styles.deleteBtn}>
+        <Pressable onPress={handleDelete} style={styles.deleteBtn} accessibilityRole="button" accessibilityLabel="Supprimer ce légume">
           <Text style={styles.deleteTxt}>Supprimer ce légume</Text>
         </Pressable>
       )}

@@ -38,7 +38,7 @@ export default function InvestSheet({ seasonLabel, onSave, onDelete, activeSeaso
     <Sheet visible={investOpen} onClose={closeInvest}>
       <View style={styles.header}>
         <Text style={styles.title}>{investEditId ? 'Modifier le coût' : 'Nouveau coût'}</Text>
-        <Pressable onPress={closeInvest} style={styles.closeBtn}>
+        <Pressable onPress={closeInvest} style={styles.closeBtn} accessibilityLabel="Fermer" accessibilityRole="button">
           <Text style={styles.closeTxt}>✕</Text>
         </Pressable>
       </View>
@@ -50,6 +50,9 @@ export default function InvestSheet({ seasonLabel, onSave, onDelete, activeSeaso
             key={t}
             onPress={() => setInvestForm({ type: t })}
             style={[styles.typeBtn, investForm.type === t && styles.typeBtnActive]}
+            accessibilityRole="radio"
+            accessibilityLabel={t === 'initial' ? 'Initial, une seule fois' : 'Récurrent'}
+            accessibilityState={{ checked: investForm.type === t }}
           >
             <Text style={[styles.typeTxt, investForm.type === t && styles.typeTxtActive]}>
               {t === 'initial' ? 'Initial (une fois)' : 'Récurrent'}
@@ -68,6 +71,7 @@ export default function InvestSheet({ seasonLabel, onSave, onDelete, activeSeaso
         onChangeText={v => setInvestForm({ libelle: v })}
         placeholder="ex : Construction des bacs"
         placeholderTextColor={colors.muted}
+        accessibilityLabel="Libellé du coût"
       />
 
       <Text style={styles.label}>Montant (€)</Text>
@@ -78,14 +82,15 @@ export default function InvestSheet({ seasonLabel, onSave, onDelete, activeSeaso
         placeholder="0"
         placeholderTextColor={colors.muted}
         keyboardType="decimal-pad"
+        accessibilityLabel="Montant en euros"
       />
 
-      <Pressable onPress={handleSave} style={[styles.saveBtn, !canSave && styles.saveBtnDisabled]}>
+      <Pressable onPress={handleSave} style={[styles.saveBtn, !canSave && styles.saveBtnDisabled]} accessibilityRole="button" accessibilityLabel="Enregistrer le coût" accessibilityState={{ disabled: !canSave }}>
         <Text style={styles.saveTxt}>Enregistrer</Text>
       </Pressable>
 
       {investEditId && onDelete && (
-        <Pressable onPress={handleDelete} style={styles.deleteBtn}>
+        <Pressable onPress={handleDelete} style={styles.deleteBtn} accessibilityRole="button" accessibilityLabel="Supprimer ce coût">
           <Text style={styles.deleteTxt}>Supprimer ce coût</Text>
         </Pressable>
       )}
