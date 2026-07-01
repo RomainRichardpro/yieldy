@@ -172,7 +172,7 @@ export default function HarvestSheet({ seasonLegumes, bacs, onSave, onDelete, ac
 const styles = StyleSheet.create({
   header: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: spacing.md },
   title: { fontSize: fontSize.h2, fontWeight: fontWeight.bold, color: colors.ink, letterSpacing: -0.5 },
-  closeBtn: { backgroundColor: colors.chip, width: 34, height: 34, borderRadius: radius.sm, alignItems: 'center', justifyContent: 'center' },
+  closeBtn: { backgroundColor: colors.chip, width: 34, height: 34, borderRadius: radius.sm, alignItems: 'center', justifyContent: 'center', borderWidth: 1, borderColor: colors.inputBorder },
   closeTxt: { color: colors.muted, fontSize: 16 },
   dateRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', backgroundColor: colors.card, borderWidth: 1, borderColor: colors.inputBorder, borderRadius: 15, padding: spacing.md, marginBottom: spacing.lg },
   dateLabel: { fontSize: fontSize.md, fontWeight: fontWeight.semibold, color: colors.muted },
@@ -191,7 +191,7 @@ const styles = StyleSheet.create({
   noLegumesLink: { fontSize: fontSize.base, color: colors.green, fontWeight: fontWeight.bold, marginTop: 4 },
   qtyRow: { flexDirection: 'row', alignItems: 'center', gap: 14 },
   qtyControl: { flexDirection: 'row', alignItems: 'center', gap: 4, backgroundColor: colors.card, borderWidth: 1, borderColor: colors.inputBorder, borderRadius: 16, padding: 6 },
-  qtyBtn: { width: 44, height: 44, borderRadius: 12, backgroundColor: colors.chip, alignItems: 'center', justifyContent: 'center' },
+  qtyBtn: { width: 44, height: 44, borderRadius: 12, backgroundColor: colors.chip, alignItems: 'center', justifyContent: 'center', borderWidth: 1, borderColor: colors.inputBorder },
   qtyBtnPlus: { backgroundColor: colors.green },
   qtyBtnTxt: { fontSize: 24, fontWeight: fontWeight.bold, color: colors.ink, lineHeight: 28 },
   qtyValue: { minWidth: 48, textAlign: 'center', fontSize: 26, fontWeight: fontWeight.extrabold, color: colors.ink },

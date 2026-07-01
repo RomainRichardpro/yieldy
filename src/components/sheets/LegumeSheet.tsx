@@ -135,7 +135,7 @@ export default function LegumeSheet({ onSave, onDelete }: Props) {
 const styles = StyleSheet.create({
   header: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: spacing.lg },
   title: { fontSize: fontSize.h2, fontWeight: fontWeight.bold, color: colors.ink, letterSpacing: -0.5 },
-  closeBtn: { backgroundColor: colors.chip, width: 34, height: 34, borderRadius: radius.sm, alignItems: 'center', justifyContent: 'center' },
+  closeBtn: { backgroundColor: colors.chip, width: 34, height: 34, borderRadius: radius.sm, alignItems: 'center', justifyContent: 'center', borderWidth: 1, borderColor: colors.inputBorder },
   closeTxt: { color: colors.muted, fontSize: 16 },
   label: { fontSize: fontSize.sm, fontWeight: fontWeight.semibold, color: colors.muted, marginBottom: 6, marginTop: spacing.md },
   input: { backgroundColor: colors.card, borderWidth: 1, borderColor: colors.inputBorder, borderRadius: radius.md, padding: spacing.md, fontSize: fontSize.lg, fontWeight: fontWeight.semibold, color: colors.ink },

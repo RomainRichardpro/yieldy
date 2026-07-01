@@ -207,7 +207,7 @@ const styles = StyleSheet.create({
   miniCardValue: { fontSize: fontSize.h2, fontWeight: fontWeight.extrabold, color: colors.ink, marginTop: 4, letterSpacing: -0.3 },
   miniCardSub: { fontSize: fontSize.xs, color: colors.muted, fontWeight: fontWeight.medium, marginTop: 3 },
   sectionHeader: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: 22, marginBottom: 10 },
-  addSmall: { backgroundColor: colors.greenSoft, paddingHorizontal: 12, paddingVertical: 7, borderRadius: 12 },
+  addSmall: { backgroundColor: colors.greenSoft, paddingHorizontal: 12, paddingVertical: 7, borderRadius: 12, borderWidth: 1, borderColor: colors.inputBorder },
   addSmallTxt: { fontSize: fontSize.sm, fontWeight: fontWeight.bold, color: colors.green },
   list: { backgroundColor: colors.card, borderWidth: 1, borderColor: colors.line, borderRadius: 20 },
   investRow: { flexDirection: 'row', alignItems: 'center', gap: 12, padding: 14, borderBottomWidth: 1, borderBottomColor: colors.line },
