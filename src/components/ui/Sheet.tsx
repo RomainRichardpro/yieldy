@@ -27,7 +27,7 @@ export default function Sheet({ visible, onClose, children, scrollable = false }
     <Modal visible={visible} transparent animationType="none" onRequestClose={onClose} statusBarTranslucent>
       <Pressable style={styles.backdrop} onPress={onClose}>
         <Animated.View style={[styles.sheet, { height: sheetHeight, transform: [{ translateY }] }]}>
-          <Pressable style={{ flex: 1 }}>
+          <View style={{ flex: 1 }} onStartShouldSetResponder={() => true}>
             <View style={styles.grabber} />
             <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={{ flex: 1 }}>
               {scrollable ? (
@@ -45,7 +45,7 @@ export default function Sheet({ visible, onClose, children, scrollable = false }
                 </View>
               )}
             </KeyboardAvoidingView>
-          </Pressable>
+          </View>
         </Animated.View>
       </Pressable>
     </Modal>
