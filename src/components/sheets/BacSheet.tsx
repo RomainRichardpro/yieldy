@@ -21,8 +21,8 @@ export default function BacSheet({ seasonLegumes, onSave, onDelete }: Props) {
     await onSave({
       id: bacEditId ?? `bac_${Date.now()}`,
       nom: bacForm.nom.trim(),
-      l: Number(bacForm.l) || 0,
-      L: Number(bacForm.L) || 0,
+      larg: Number(bacForm.larg) || 0,
+      long: Number(bacForm.long) || 0,
       contenu: bacForm.contenu,
     });
     closeBac();
@@ -57,8 +57,8 @@ export default function BacSheet({ seasonLegumes, onSave, onDelete }: Props) {
           <Text style={styles.label}>Largeur (cm)</Text>
           <TextInput
             style={styles.input}
-            value={bacForm.l}
-            onChangeText={v => setBacForm({ l: v })}
+            value={bacForm.larg}
+            onChangeText={v => setBacForm({ larg: v })}
             placeholder="—"
             placeholderTextColor={colors.muted}
             keyboardType="numeric"
@@ -68,8 +68,8 @@ export default function BacSheet({ seasonLegumes, onSave, onDelete }: Props) {
           <Text style={styles.label}>Longueur (cm)</Text>
           <TextInput
             style={styles.input}
-            value={bacForm.L}
-            onChangeText={v => setBacForm({ L: v })}
+            value={bacForm.long}
+            onChangeText={v => setBacForm({ long: v })}
             placeholder="—"
             placeholderTextColor={colors.muted}
             keyboardType="numeric"

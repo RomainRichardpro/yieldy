@@ -39,13 +39,13 @@ function blankLegumeForm(): LegumeForm {
 
 export interface BacForm {
   nom: string;
-  l: string;
-  L: string;
+  larg: string;
+  long: string;
   contenu: string[];
 }
 
 function blankBacForm(index: number): BacForm {
-  return { nom: `Bac ${index}`, l: '', L: '', contenu: [] };
+  return { nom: `Bac ${index}`, larg: '', long: '', contenu: [] };
 }
 
 // ─── Invest form ──────────────────────────────────────────────────────────────

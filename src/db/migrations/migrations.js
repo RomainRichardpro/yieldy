@@ -10,8 +10,8 @@ const m0000 = `CREATE TABLE \`bac_legumes\` (
 CREATE TABLE \`bacs\` (
 	\`id\` text PRIMARY KEY NOT NULL,
 	\`nom\` text NOT NULL,
-	\`l\` real DEFAULT 0,
-	\`L\` real DEFAULT 0
+	\`larg\` real DEFAULT 0,
+	\`long\` real DEFAULT 0
 );
 --> statement-breakpoint
 CREATE TABLE \`harvests\` (

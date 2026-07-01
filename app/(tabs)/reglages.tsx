@@ -93,11 +93,11 @@ export default function ReglagesScreen() {
               {bacs.map(b => {
                 const contenuNoms = b.contenu.map(id => legumes.find(l => l.id === id)?.nom).filter(Boolean);
                 return (
-                  <Pressable key={b.id} onPress={() => openBac(b.id, { nom: b.nom, l: String(b.l), L: String(b.L), contenu: b.contenu })} style={styles.bacRow}>
+                  <Pressable key={b.id} onPress={() => openBac(b.id, { nom: b.nom, larg: String(b.larg), long: String(b.long), contenu: b.contenu })} style={styles.bacRow}>
                     <View style={styles.bacIcon}><Text style={{ fontSize: 18 }}>🪴</Text></View>
                     <View style={{ flex: 1 }}>
                       <Text style={styles.legumeNom}>{b.nom}</Text>
-                      <Text style={styles.legumeSub}>{b.l > 0 ? `${b.l}×${b.L} cm` : 'Dimensions non définies'}</Text>
+                      <Text style={styles.legumeSub}>{b.larg > 0 ? `${b.larg}×${b.long} cm` : 'Dimensions non définies'}</Text>
                       {contenuNoms.length > 0 && <Text style={styles.bacContenu}>🌱 {contenuNoms.join(', ')}</Text>}
                     </View>
                     <Text style={styles.chevron}>›</Text>
