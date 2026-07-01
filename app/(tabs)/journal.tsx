@@ -1,11 +1,10 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { View, Text, ScrollView, Pressable, StyleSheet } from 'react-native';
 import { useFocusEffect } from 'expo-router';
 import { colors, spacing, radius, fontSize, fontWeight } from '../../src/utils/tokens';
 import { fmt, initial, valeurRecolte, qtyLabel, relDate } from '../../src/utils/format';
-import { getLegumes, getBacs, getHarvests, getActiveSeason, getSeasonLegumeIds, upsertHarvest, deleteHarvest } from '../../src/db/queries';
+import { getLegumes, getBacs, getHarvests, getActiveSeason, getSeasonLegumeIds } from '../../src/db/queries';
 import { useAppStore } from '../../src/store/useAppStore';
-import HarvestSheet from '../../src/components/sheets/HarvestSheet';
 import EmptyState from '../../src/components/ui/EmptyState';
 import type { Legume, Bac, Harvest } from '../../src/types';
 
@@ -16,7 +15,8 @@ export default function JournalScreen() {
   const [activeSeason, setActiveSeason] = useState<number | null>(null);
   const [seasonLegumeIds, setSeasonLegumeIds] = useState<string[]>([]);
   const [filterLegumeId, setFilterLegumeId] = useState<string | null>(null);
-  const { openHarvest } = useAppStore();
+  const { openHarvest, harvestOpen } = useAppStore();
+  const prevHarvestOpen = useRef(harvestOpen);
 
   async function load() {
     const s = await getActiveSeason();
@@ -29,6 +29,11 @@ export default function JournalScreen() {
   }
 
   useFocusEffect(useCallback(() => { load(); }, []));
+
+  useEffect(() => {
+    if (prevHarvestOpen.current && !harvestOpen) load();
+    prevHarvestOpen.current = harvestOpen;
+  }, [harvestOpen]);
 
   if (!activeSeason) return null;
 
@@ -129,13 +134,6 @@ export default function JournalScreen() {
         <View style={{ height: 120 }} />
       </ScrollView>
 
-      <HarvestSheet
-        seasonLegumes={seasonLegumes}
-        bacs={bacs}
-        activeSeason={activeSeason}
-        onSave={async (h) => { await upsertHarvest(h); await load(); }}
-        onDelete={async (id) => { await deleteHarvest(id); await load(); }}
-      />
     </View>
   );
 }

@@ -1,12 +1,10 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { View, Text, ScrollView, Pressable, StyleSheet } from 'react-native';
 import { useFocusEffect } from 'expo-router';
 import { colors, spacing, radius, fontSize, fontWeight, shadows } from '../../src/utils/tokens';
 import { fmt, fmt0, initial, valeurRecolte, qtyLabel, relDate } from '../../src/utils/format';
 import { getLegumes, getBacs, getHarvests, getInvest, getActiveSeason } from '../../src/db/queries';
 import { useAppStore } from '../../src/store/useAppStore';
-import HarvestSheet from '../../src/components/sheets/HarvestSheet';
-import { upsertHarvest, deleteHarvest, getSeasonLegumeIds } from '../../src/db/queries';
 import EmptyState from '../../src/components/ui/EmptyState';
 import type { Legume, Bac, Harvest, Invest } from '../../src/types';
 
@@ -16,20 +14,25 @@ export default function AccueilScreen() {
   const [harvests, setHarvests] = useState<Harvest[]>([]);
   const [invest, setInvest] = useState<Invest[]>([]);
   const [activeSeason, setActiveSeason] = useState<number | null>(null);
-  const [seasonLegumeIds, setSeasonLegumeIds] = useState<string[]>([]);
-  const { openHarvest } = useAppStore();
+  const { openHarvest, harvestOpen } = useAppStore();
+  const prevHarvestOpen = useRef(harvestOpen);
 
   async function load() {
     const s = await getActiveSeason();
     if (!s) return;
     setActiveSeason(s.id);
-    const [l, b, h, inv, ids] = await Promise.all([
-      getLegumes(), getBacs(), getHarvests(s.id), getInvest(), getSeasonLegumeIds(s.id)
+    const [l, b, h, inv] = await Promise.all([
+      getLegumes(), getBacs(), getHarvests(s.id), getInvest()
     ]);
-    setLegumes(l); setBacs(b); setHarvests(h); setInvest(inv); setSeasonLegumeIds(ids);
+    setLegumes(l); setBacs(b); setHarvests(h); setInvest(inv);
   }
 
   useFocusEffect(useCallback(() => { load(); }, []));
+
+  useEffect(() => {
+    if (prevHarvestOpen.current && !harvestOpen) load();
+    prevHarvestOpen.current = harvestOpen;
+  }, [harvestOpen]);
 
   if (!activeSeason) return null;
 
@@ -45,7 +48,6 @@ export default function AccueilScreen() {
   const rentable = cum >= cout && cout > 0;
 
   const recent = harvests.slice(0, 3);
-  const seasonLegumes = legumes.filter(l => seasonLegumeIds.includes(l.id));
 
   return (
     <View style={styles.container}>
@@ -143,13 +145,6 @@ export default function AccueilScreen() {
         <View style={{ height: 120 }} />
       </ScrollView>
 
-      <HarvestSheet
-        seasonLegumes={seasonLegumes}
-        bacs={bacs}
-        activeSeason={activeSeason}
-        onSave={async (h) => { await upsertHarvest(h); await load(); }}
-        onDelete={async (id) => { await deleteHarvest(id); await load(); }}
-      />
     </View>
   );
 }
