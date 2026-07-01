@@ -40,9 +40,9 @@ export default function ReglagesScreen() {
   return (
     <View style={styles.container}>
       <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
-        <Text style={styles.h1}>Réglages</Text>
+        <Text style={styles.h1} accessibilityRole="header">Réglages</Text>
 
-        <Text style={styles.sectionCap}>Saison active</Text>
+        <Text style={styles.sectionCap} accessibilityRole="header">Saison active</Text>
         <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.chipRow}>
           {seasons.map(s => (
             <Pressable key={s.id} onPress={async () => { await dbSetActiveSeason(s.id); await load(); }} style={[styles.seasonChip, activeSeason === s.id && styles.seasonChipActive]} accessibilityRole="radio" accessibilityLabel={s.label} accessibilityState={{ checked: activeSeason === s.id }}>
@@ -56,14 +56,14 @@ export default function ReglagesScreen() {
         <Text style={styles.hint}>La saison active filtre tout : légumes du potager, coûts récurrents, récoltes et stats.</Text>
 
         <View style={styles.sectionHeader}>
-          <Text style={styles.h2}>Légumes</Text>
-          <Pressable onPress={() => openLegume()} style={styles.addBtn} accessibilityRole="button" accessibilityLabel="Ajouter un légume"><Text style={styles.addBtnTxt}>+</Text></Pressable>
+          <Text style={styles.h2} accessibilityRole="header">Légumes</Text>
+          <Pressable onPress={() => openLegume()} style={({ focused }) => [styles.addBtn, focused && { borderColor: colors.green, borderWidth: 2 }]} accessibilityRole="button" accessibilityLabel="Ajouter un légume"><Text style={styles.addBtnTxt}>+</Text></Pressable>
         </View>
         <Text style={styles.hint}>Active ceux de ton potager {activeSeason ? `Saison ${activeSeason}` : ''}</Text>
 
         {legumes.length === 0
           ? <EmptyState title="Aucun légume" subtitle="Ajoute tes légumes avec le bouton +" />
-          : <View style={styles.list}>
+          : <View style={styles.list} accessibilityRole="list">
               {legumes.map(l => {
                 const on = seasonLegumeIds.includes(l.id);
                 return (
@@ -83,13 +83,13 @@ export default function ReglagesScreen() {
         }
 
         <View style={styles.sectionHeader}>
-          <Text style={styles.h2}>Bacs & zones</Text>
-          <Pressable onPress={() => openBac(undefined, undefined, bacs.length)} style={styles.addBtn} accessibilityRole="button" accessibilityLabel="Ajouter un bac"><Text style={styles.addBtnTxt}>+</Text></Pressable>
+          <Text style={styles.h2} accessibilityRole="header">Bacs & zones</Text>
+          <Pressable onPress={() => openBac(undefined, undefined, bacs.length)} style={({ focused }) => [styles.addBtn, focused && { borderColor: colors.green, borderWidth: 2 }]} accessibilityRole="button" accessibilityLabel="Ajouter un bac"><Text style={styles.addBtnTxt}>+</Text></Pressable>
         </View>
 
         {bacs.length === 0
           ? <EmptyState title="Aucun bac" subtitle="Ajoute tes zones de culture avec le bouton +" />
-          : <View style={styles.list}>
+          : <View style={styles.list} accessibilityRole="list">
               {bacs.map(b => {
                 const contenuNoms = b.contenu.map(id => legumes.find(l => l.id === id)?.nom).filter(Boolean);
                 return (

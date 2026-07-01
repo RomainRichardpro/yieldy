@@ -6,11 +6,11 @@ export default function TabsLayout() {
   return (
     <>
       <Tabs tabBar={props => <TabBar {...props} />} screenOptions={{ headerShown: false }}>
-        <Tabs.Screen name="index" />
-        <Tabs.Screen name="journal" />
-        <Tabs.Screen name="recap" />
-        <Tabs.Screen name="renta" />
-        <Tabs.Screen name="reglages" />
+        <Tabs.Screen name="index" options={{ title: 'Accueil' }} />
+        <Tabs.Screen name="journal" options={{ title: 'Journal' }} />
+        <Tabs.Screen name="recap" options={{ title: 'Récapitulatif' }} />
+        <Tabs.Screen name="renta" options={{ title: 'Rentabilité' }} />
+        <Tabs.Screen name="reglages" options={{ title: 'Réglages' }} />
       </Tabs>
       <GlobalHarvestSheet />
     </>

@@ -1,4 +1,4 @@
-import { View, Text, TextInput, Pressable, StyleSheet, ScrollView, Alert } from 'react-native';
+import { View, Text, TextInput, Pressable, StyleSheet, ScrollView, Alert, AccessibilityInfo } from 'react-native';
 import Sheet from '../ui/Sheet';
 import { useAppStore } from '../../store/useAppStore';
 import { colors, spacing, radius, fontSize, fontWeight } from '../../utils/tokens';
@@ -39,6 +39,7 @@ export default function HarvestSheet({ seasonLegumes, bacs, onSave, onDelete, ac
         notes: harvestForm.notes || null,
         season_id: activeSeason,
       });
+      AccessibilityInfo.announceForAccessibility('Récolte enregistrée');
       closeHarvest();
     } catch (e: any) {
       Alert.alert('Erreur', e?.message ?? String(e));
@@ -48,6 +49,7 @@ export default function HarvestSheet({ seasonLegumes, bacs, onSave, onDelete, ac
   async function handleDelete() {
     if (!harvestEditId || !onDelete) return;
     await onDelete(harvestEditId);
+    AccessibilityInfo.announceForAccessibility('Récolte supprimée');
     closeHarvest();
   }
 
@@ -56,7 +58,7 @@ export default function HarvestSheet({ seasonLegumes, bacs, onSave, onDelete, ac
       {/* Header */}
       <View style={styles.header}>
         <Text style={styles.title}>{harvestEditId ? 'Modifier la récolte' : 'Nouvelle récolte'}</Text>
-        <Pressable onPress={closeHarvest} style={styles.closeBtn} accessibilityLabel="Fermer" accessibilityRole="button">
+        <Pressable onPress={closeHarvest} style={({ focused }) => [styles.closeBtn, focused && { borderColor: colors.green, borderWidth: 2 }]} accessibilityLabel="Fermer" accessibilityRole="button">
           <Text style={styles.closeTxt}>✕</Text>
         </Pressable>
       </View>
@@ -124,18 +126,18 @@ export default function HarvestSheet({ seasonLegumes, bacs, onSave, onDelete, ac
       <View style={styles.row}>
         <View style={{ flex: 1 }}>
           <Text style={styles.label}>Poids (g)</Text>
-          <TextInput style={styles.input} value={harvestForm.poids} onChangeText={v => setHarvestForm({ poids: v })} placeholder="—" placeholderTextColor={colors.muted} keyboardType="numeric" accessibilityLabel="Poids en grammes" />
+          <TextInput style={styles.input} value={harvestForm.poids} onChangeText={v => setHarvestForm({ poids: v })} placeholder="—" placeholderTextColor={colors.muted} keyboardType="numeric" textContentType="none" accessibilityLabel="Poids en grammes" />
         </View>
         {showLong && (
           <View style={{ flex: 1 }}>
             <Text style={styles.label}>Longueur (cm)</Text>
-            <TextInput style={styles.input} value={harvestForm.longueur} onChangeText={v => setHarvestForm({ longueur: v })} placeholder="—" placeholderTextColor={colors.muted} keyboardType="numeric" accessibilityLabel="Longueur en centimètres" />
+            <TextInput style={styles.input} value={harvestForm.longueur} onChangeText={v => setHarvestForm({ longueur: v })} placeholder="—" placeholderTextColor={colors.muted} keyboardType="numeric" textContentType="none" accessibilityLabel="Longueur en centimètres" />
           </View>
         )}
       </View>
 
       <Text style={styles.label}>Variété</Text>
-      <TextInput style={styles.input} value={harvestForm.variete} onChangeText={v => setHarvestForm({ variete: v })} placeholder="ex : Coeur de boeuf" placeholderTextColor={colors.muted} accessibilityLabel="Variété" />
+      <TextInput style={styles.input} value={harvestForm.variete} onChangeText={v => setHarvestForm({ variete: v })} placeholder="ex : Coeur de boeuf" placeholderTextColor={colors.muted} textContentType="none" accessibilityLabel="Variété" />
 
       {bacs.length > 0 && (
         <>
@@ -154,9 +156,9 @@ export default function HarvestSheet({ seasonLegumes, bacs, onSave, onDelete, ac
       )}
 
       <Text style={styles.label}>Notes</Text>
-      <TextInput style={[styles.input, styles.textarea]} value={harvestForm.notes} onChangeText={v => setHarvestForm({ notes: v })} placeholder="Une remarque sur cette récolte…" placeholderTextColor={colors.muted} multiline numberOfLines={2} accessibilityLabel="Notes" />
+      <TextInput style={[styles.input, styles.textarea]} value={harvestForm.notes} onChangeText={v => setHarvestForm({ notes: v })} placeholder="Une remarque sur cette récolte…" placeholderTextColor={colors.muted} multiline numberOfLines={2} textContentType="none" accessibilityLabel="Notes" />
 
-      <Pressable onPress={handleSave} style={[styles.saveBtn, !canSave && styles.saveBtnDisabled]} accessibilityRole="button" accessibilityLabel={harvestEditId ? 'Enregistrer les modifications' : 'Valider la récolte'} accessibilityState={{ disabled: !canSave }}>
+      <Pressable onPress={handleSave} style={[styles.saveBtn, !canSave && styles.saveBtnDisabled]} accessibilityRole="button" accessibilityLabel={harvestEditId ? 'Enregistrer les modifications' : 'Valider la récolte'} accessibilityState={{ disabled: !canSave }} accessibilityHint={!canSave ? 'Sélectionne un légume pour valider' : undefined}>
         <Text style={styles.saveTxt}>{harvestEditId ? 'Enregistrer les modifications' : 'Valider la récolte'}</Text>
       </Pressable>
 
@@ -172,7 +174,7 @@ export default function HarvestSheet({ seasonLegumes, bacs, onSave, onDelete, ac
 const styles = StyleSheet.create({
   header: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: spacing.md },
   title: { fontSize: fontSize.h2, fontWeight: fontWeight.bold, color: colors.ink, letterSpacing: -0.5 },
-  closeBtn: { backgroundColor: colors.chip, width: 34, height: 34, borderRadius: radius.sm, alignItems: 'center', justifyContent: 'center', borderWidth: 1, borderColor: colors.inputBorder },
+  closeBtn: { backgroundColor: colors.chip, width: 44, height: 44, borderRadius: radius.sm, alignItems: 'center', justifyContent: 'center', borderWidth: 1, borderColor: colors.inputBorder },
   closeTxt: { color: colors.muted, fontSize: 16 },
   dateRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', backgroundColor: colors.card, borderWidth: 1, borderColor: colors.inputBorder, borderRadius: 15, padding: spacing.md, marginBottom: spacing.lg },
   dateLabel: { fontSize: fontSize.md, fontWeight: fontWeight.semibold, color: colors.muted },

@@ -56,7 +56,7 @@ export default function RentaScreen() {
       <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
         {/* Header */}
         <View style={styles.headerRow}>
-          <Text style={styles.h1}>Rentabilité</Text>
+          <Text style={styles.h1} accessibilityRole="header">Rentabilité</Text>
           {coutTotal > 0 && (
             <View style={[styles.badge, rentable ? styles.badgeGreen : styles.badgeOrange]}>
               <Text style={[styles.badgeTxt, rentable ? styles.badgeTxtGreen : styles.badgeTxtOrange]}>
@@ -104,7 +104,7 @@ export default function RentaScreen() {
 
             {/* Investissements initiaux */}
             <View style={styles.sectionHeader}>
-              <Text style={styles.h2}>Investissements initiaux</Text>
+              <Text style={styles.h2} accessibilityRole="header">Investissements initiaux</Text>
               <Pressable onPress={() => openInvest('initial')} style={styles.addSmall} accessibilityRole="button" accessibilityLabel="Ajouter un investissement initial">
                 <Text style={styles.addSmallTxt}>+ Ajouter</Text>
               </Pressable>
@@ -115,7 +115,7 @@ export default function RentaScreen() {
                 <Text style={styles.emptySectionTxt}>Aucun investissement initial (matériel, sol, graines…)</Text>
               </View>
             ) : (
-              <View style={styles.list}>
+              <View style={styles.list} accessibilityRole="list">
                 {initiaux.map(i => (
                   <Pressable
                     key={i.id}
@@ -138,7 +138,7 @@ export default function RentaScreen() {
 
             {/* Coûts récurrents */}
             <View style={[styles.sectionHeader, { marginTop: 22 }]}>
-              <Text style={styles.h2}>Coûts récurrents</Text>
+              <Text style={styles.h2} accessibilityRole="header">Coûts récurrents</Text>
               <Pressable onPress={() => openInvest('recurrent')} style={styles.addSmall} accessibilityRole="button" accessibilityLabel="Ajouter un coût récurrent">
                 <Text style={styles.addSmallTxt}>+ Ajouter</Text>
               </Pressable>
@@ -149,7 +149,7 @@ export default function RentaScreen() {
                 <Text style={styles.emptySectionTxt}>Aucun coût récurrent cette saison (eau, semences, engrais…)</Text>
               </View>
             ) : (
-              <View style={styles.list}>
+              <View style={styles.list} accessibilityRole="list">
                 {recurrents.map(i => (
                   <Pressable
                     key={i.id}

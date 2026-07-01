@@ -57,7 +57,7 @@ export default function AccueilScreen() {
         <View style={styles.headerRow}>
           <View>
             <Text style={styles.greeting}>Bonjour 🌱</Text>
-            <Text style={styles.h1}>Ton potager</Text>
+            <Text style={styles.h1} accessibilityRole="header">Ton potager</Text>
           </View>
           <View style={styles.seasonBadge}>
             <Text style={styles.seasonBadgeTxt}>Saison {activeSeason}</Text>
@@ -110,13 +110,13 @@ export default function AccueilScreen() {
 
         {/* Dernières récoltes */}
         <View style={styles.sectionHeader}>
-          <Text style={styles.h2}>Dernières récoltes</Text>
+          <Text style={styles.h2} accessibilityRole="header">Dernières récoltes</Text>
         </View>
 
         {recent.length === 0 ? (
           <EmptyState title="Aucune récolte" subtitle="Appuie sur + pour enregistrer ta première récolte" />
         ) : (
-          <View style={styles.list}>
+          <View style={styles.list} accessibilityRole="list">
             {recent.map(h => {
               const l = legMap[h.legume_id];
               const b = bacMap[h.bac_id ?? ''];

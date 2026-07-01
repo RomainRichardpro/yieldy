@@ -1,4 +1,4 @@
-import { View, Text, TextInput, Pressable, StyleSheet } from 'react-native';
+import { View, Text, TextInput, Pressable, StyleSheet, AccessibilityInfo } from 'react-native';
 import Sheet from '../ui/Sheet';
 import { useAppStore } from '../../store/useAppStore';
 import { colors, spacing, radius, fontSize, fontWeight } from '../../utils/tokens';
@@ -28,12 +28,14 @@ export default function LegumeSheet({ onSave, onDelete }: Props) {
       source: legumeForm.source.trim() || null,
       color: legumeForm.color,
     });
+    AccessibilityInfo.announceForAccessibility('Légume enregistré');
     closeLegume();
   }
 
   async function handleDelete() {
     if (!legumeEditId || !onDelete) return;
     await onDelete(legumeEditId);
+    AccessibilityInfo.announceForAccessibility('Légume supprimé');
     closeLegume();
   }
 
@@ -42,7 +44,7 @@ export default function LegumeSheet({ onSave, onDelete }: Props) {
       {/* Header */}
       <View style={styles.header}>
         <Text style={styles.title}>{legumeEditId ? 'Modifier le légume' : 'Nouveau légume'}</Text>
-        <Pressable onPress={closeLegume} style={styles.closeBtn} accessibilityLabel="Fermer" accessibilityRole="button">
+        <Pressable onPress={closeLegume} style={({ focused }) => [styles.closeBtn, focused && { borderColor: colors.green, borderWidth: 2 }]} accessibilityLabel="Fermer" accessibilityRole="button">
           <Text style={styles.closeTxt}>✕</Text>
         </Pressable>
       </View>
@@ -55,6 +57,7 @@ export default function LegumeSheet({ onSave, onDelete }: Props) {
         onChangeText={onLegumeNom}
         placeholder="ex : Haricot vert"
         placeholderTextColor={colors.muted}
+        textContentType="none"
         accessibilityLabel="Nom du légume"
       />
 
@@ -67,6 +70,7 @@ export default function LegumeSheet({ onSave, onDelete }: Props) {
         placeholder="0,00"
         placeholderTextColor={colors.muted}
         keyboardType="decimal-pad"
+        textContentType="none"
         accessibilityLabel="Prix de référence en euros"
       />
 
@@ -115,11 +119,12 @@ export default function LegumeSheet({ onSave, onDelete }: Props) {
         onChangeText={v => setLegumeForm({ source: v })}
         placeholder="ex : Leclerc"
         placeholderTextColor={colors.muted}
+        textContentType="organizationName"
         accessibilityLabel="Source du prix"
       />
 
       {/* Actions */}
-      <Pressable onPress={handleSave} style={[styles.saveBtn, !canSave && styles.saveBtnDisabled]} accessibilityRole="button" accessibilityLabel="Enregistrer le légume" accessibilityState={{ disabled: !canSave }}>
+      <Pressable onPress={handleSave} style={[styles.saveBtn, !canSave && styles.saveBtnDisabled]} accessibilityRole="button" accessibilityLabel="Enregistrer le légume" accessibilityState={{ disabled: !canSave }} accessibilityHint={!canSave ? 'Renseigne le nom et le prix pour valider' : undefined}>
         <Text style={styles.saveTxt}>Enregistrer</Text>
       </Pressable>
 
@@ -135,7 +140,7 @@ export default function LegumeSheet({ onSave, onDelete }: Props) {
 const styles = StyleSheet.create({
   header: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: spacing.lg },
   title: { fontSize: fontSize.h2, fontWeight: fontWeight.bold, color: colors.ink, letterSpacing: -0.5 },
-  closeBtn: { backgroundColor: colors.chip, width: 34, height: 34, borderRadius: radius.sm, alignItems: 'center', justifyContent: 'center', borderWidth: 1, borderColor: colors.inputBorder },
+  closeBtn: { backgroundColor: colors.chip, width: 44, height: 44, borderRadius: radius.sm, alignItems: 'center', justifyContent: 'center', borderWidth: 1, borderColor: colors.inputBorder },
   closeTxt: { color: colors.muted, fontSize: 16 },
   label: { fontSize: fontSize.sm, fontWeight: fontWeight.semibold, color: colors.muted, marginBottom: 6, marginTop: spacing.md },
   input: { backgroundColor: colors.card, borderWidth: 1, borderColor: colors.inputBorder, borderRadius: radius.md, padding: spacing.md, fontSize: fontSize.lg, fontWeight: fontWeight.semibold, color: colors.ink },

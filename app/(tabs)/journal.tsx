@@ -57,7 +57,7 @@ export default function JournalScreen() {
       <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
         {/* Header */}
         <View style={styles.headerRow}>
-          <Text style={styles.h1}>Journal</Text>
+          <Text style={styles.h1} accessibilityRole="header">Journal</Text>
           <Text style={styles.count}>{harvests.length} récolte{harvests.length !== 1 ? 's' : ''}</Text>
         </View>
 
@@ -100,8 +100,8 @@ export default function JournalScreen() {
         {/* Grouped list */}
         {groups.map(group => (
           <View key={group.label} style={styles.group}>
-            <Text style={styles.groupLabel}>{group.label}</Text>
-            <View style={styles.groupItems}>
+            <Text style={styles.groupLabel} accessibilityRole="header">{group.label}</Text>
+            <View style={styles.groupItems} accessibilityRole="list">
               {group.items.map(h => {
                 const l = legMap[h.legume_id];
                 const b = bacMap[h.bac_id ?? ''];
