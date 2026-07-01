@@ -195,7 +195,7 @@ const styles = StyleSheet.create({
   badgeOrange: { backgroundColor: colors.accentSoft },
   badgeTxt: { fontSize: fontSize.sm, fontWeight: fontWeight.bold },
   badgeTxtGreen: { color: colors.green },
-  badgeTxtOrange: { color: colors.accent },
+  badgeTxtOrange: { color: colors.accentDark },
   chartCard: { backgroundColor: colors.card, borderWidth: 1, borderColor: colors.line, borderRadius: 22, padding: 18, paddingBottom: 14 },
   cardTitle: { fontSize: fontSize.lg, fontWeight: fontWeight.bold, color: colors.ink },
   cardSub: { fontSize: 12.5, color: colors.muted, fontWeight: fontWeight.medium, marginTop: 2 },

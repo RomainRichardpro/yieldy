@@ -26,9 +26,11 @@ export const colors = {
   accentSoft:  '#f3e2d6',  // accent tint background
 
   // Structural
-  line:        '#e8e3d4',  // borders, dividers
+  line:        '#e8e3d4',  // decorative dividers, list separators
+  inputBorder: '#7d7869',  // interactive component boundaries (inputs, chips, rows) — 4.41:1 on white, 3.97:1 on surface (WCAG 1.4.11)
   white:       '#ffffff',
   destructive: '#c2403a',  // delete actions
+  accentDark:  '#8b3612',  // accent text on accentSoft background — 6.32:1 (WCAG AA)
 } as const;
 
 // ─── Spacing ──────────────────────────────────────────────────────────────────
