@@ -130,7 +130,7 @@ const styles = StyleSheet.create({
   addSeasonChip: { borderWidth: 1.5, borderColor: colors.green, borderStyle: 'dashed', backgroundColor: colors.greenSoft, paddingHorizontal: 16, paddingVertical: 12, borderRadius: 15 },
   addSeasonTxt: { fontSize: fontSize.md, fontWeight: fontWeight.bold, color: colors.green },
   hint: { fontSize: fontSize.sm, color: colors.muted, marginTop: 8, marginBottom: 12, lineHeight: 18 },
-  addBtn: { backgroundColor: colors.greenSoft, width: 34, height: 34, borderRadius: radius.sm, alignItems: 'center', justifyContent: 'center' },
+  addBtn: { backgroundColor: colors.greenSoft, width: 34, height: 34, borderRadius: radius.sm, alignItems: 'center', justifyContent: 'center', borderWidth: 1, borderColor: colors.inputBorder },
   addBtnTxt: { color: colors.green, fontSize: 22, lineHeight: 28, fontWeight: fontWeight.bold },
   list: { gap: 10 },
   legumeRow: { flexDirection: 'row', alignItems: 'center', gap: 13, backgroundColor: colors.card, borderWidth: 1, borderColor: colors.inputBorder, borderRadius: radius.lg, padding: spacing.md },
