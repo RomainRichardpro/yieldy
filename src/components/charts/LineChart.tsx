@@ -7,9 +7,10 @@ interface Props {
   target: number;
   width?: number;
   height?: number;
+  accessibilityLabel?: string;
 }
 
-export default function LineChart({ points, target, width = 326, height = 190 }: Props) {
+export default function LineChart({ points, target, width = 326, height = 190, accessibilityLabel }: Props) {
   const padL = 8, padR = 8, padT = 18, padB = 26;
 
   const cum = points.length > 0 ? points[points.length - 1].y : 0;
@@ -30,7 +31,7 @@ export default function LineChart({ points, target, width = 326, height = 190 }:
     : '';
 
   return (
-    <Svg width={width} height={height} viewBox={`0 0 ${width} ${height}`} style={{ overflow: 'visible' }}>
+    <Svg width={width} height={height} viewBox={`0 0 ${width} ${height}`} style={{ overflow: 'visible' }} accessible={true} accessibilityRole="image" accessibilityLabel={accessibilityLabel ?? `Graphique de progression. Objectif : ${fmt0(target)}, valeur actuelle : ${fmt0(points.length > 0 ? points[points.length - 1].y : 0)}`}>
       <Defs>
         <LinearGradient id="potArea" x1="0" y1="0" x2="0" y2="1">
           <Stop offset="0%" stopColor={colors.green} stopOpacity={0.3} />

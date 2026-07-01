@@ -1,11 +1,10 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { View, Text, ScrollView, Pressable, StyleSheet } from 'react-native';
 import { useFocusEffect } from 'expo-router';
 import { colors, spacing, radius, fontSize, fontWeight } from '../../src/utils/tokens';
 import { fmt, initial, valeurRecolte, qtyLabel, relDate } from '../../src/utils/format';
-import { getLegumes, getBacs, getHarvests, getActiveSeason, getSeasonLegumeIds, upsertHarvest, deleteHarvest } from '../../src/db/queries';
+import { getLegumes, getBacs, getHarvests, getActiveSeason, getSeasonLegumeIds } from '../../src/db/queries';
 import { useAppStore } from '../../src/store/useAppStore';
-import HarvestSheet from '../../src/components/sheets/HarvestSheet';
 import EmptyState from '../../src/components/ui/EmptyState';
 import type { Legume, Bac, Harvest } from '../../src/types';
 
@@ -16,7 +15,8 @@ export default function JournalScreen() {
   const [activeSeason, setActiveSeason] = useState<number | null>(null);
   const [seasonLegumeIds, setSeasonLegumeIds] = useState<string[]>([]);
   const [filterLegumeId, setFilterLegumeId] = useState<string | null>(null);
-  const { openHarvest } = useAppStore();
+  const { openHarvest, harvestOpen } = useAppStore();
+  const prevHarvestOpen = useRef(harvestOpen);
 
   async function load() {
     const s = await getActiveSeason();
@@ -29,6 +29,11 @@ export default function JournalScreen() {
   }
 
   useFocusEffect(useCallback(() => { load(); }, []));
+
+  useEffect(() => {
+    if (prevHarvestOpen.current && !harvestOpen) load();
+    prevHarvestOpen.current = harvestOpen;
+  }, [harvestOpen]);
 
   if (!activeSeason) return null;
 
@@ -52,7 +57,7 @@ export default function JournalScreen() {
       <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
         {/* Header */}
         <View style={styles.headerRow}>
-          <Text style={styles.h1}>Journal</Text>
+          <Text style={styles.h1} accessibilityRole="header">Journal</Text>
           <Text style={styles.count}>{harvests.length} récolte{harvests.length !== 1 ? 's' : ''}</Text>
         </View>
 
@@ -62,6 +67,9 @@ export default function JournalScreen() {
             <Pressable
               onPress={() => setFilterLegumeId(null)}
               style={[styles.chip, !filterLegumeId && styles.chipActive]}
+              accessibilityRole="radio"
+              accessibilityLabel="Tous les légumes"
+              accessibilityState={{ checked: !filterLegumeId }}
             >
               <Text style={[styles.chipTxt, !filterLegumeId && styles.chipTxtActive]}>Tous</Text>
             </Pressable>
@@ -70,6 +78,9 @@ export default function JournalScreen() {
                 key={l.id}
                 onPress={() => setFilterLegumeId(filterLegumeId === l.id ? null : l.id)}
                 style={[styles.chip, filterLegumeId === l.id && styles.chipActive, filterLegumeId === l.id && { borderColor: l.color }]}
+                accessibilityRole="radio"
+                accessibilityLabel={l.nom}
+                accessibilityState={{ checked: filterLegumeId === l.id }}
               >
                 <View style={[styles.chipDot, { backgroundColor: l.color }]} />
                 <Text style={[styles.chipTxt, filterLegumeId === l.id && styles.chipTxtActive]}>{l.nom}</Text>
@@ -89,8 +100,8 @@ export default function JournalScreen() {
         {/* Grouped list */}
         {groups.map(group => (
           <View key={group.label} style={styles.group}>
-            <Text style={styles.groupLabel}>{group.label}</Text>
-            <View style={styles.groupItems}>
+            <Text style={styles.groupLabel} accessibilityRole="header">{group.label}</Text>
+            <View style={styles.groupItems} accessibilityRole="list">
               {group.items.map(h => {
                 const l = legMap[h.legume_id];
                 const b = bacMap[h.bac_id ?? ''];
@@ -100,6 +111,8 @@ export default function JournalScreen() {
                     key={h.id}
                     onPress={() => openHarvest(h.id, { date: h.date, legume_id: h.legume_id, qty: h.qty, poids: h.poids ? String(h.poids) : '', longueur: h.longueur ? String(h.longueur) : '', variete: h.variete ?? '', bac_id: h.bac_id ?? null, notes: h.notes ?? '' })}
                     style={styles.harvestRow}
+                    accessibilityRole="button"
+                    accessibilityLabel={`Modifier la récolte de ${legMap[h.legume_id]?.nom ?? 'légume'}`}
                   >
                     <View style={[styles.badge, { backgroundColor: l.color }]}>
                       <Text style={styles.badgeTxt}>{initial(l.nom)}</Text>
@@ -121,13 +134,6 @@ export default function JournalScreen() {
         <View style={{ height: 120 }} />
       </ScrollView>
 
-      <HarvestSheet
-        seasonLegumes={seasonLegumes}
-        bacs={bacs}
-        activeSeason={activeSeason}
-        onSave={async (h) => { await upsertHarvest(h); await load(); }}
-        onDelete={async (id) => { await deleteHarvest(id); await load(); }}
-      />
     </View>
   );
 }
@@ -140,7 +146,7 @@ const styles = StyleSheet.create({
   count: { fontSize: fontSize.base, fontWeight: fontWeight.semibold, color: colors.muted },
   chipScroll: { marginTop: 14, marginHorizontal: -spacing.xl },
   chipRow: { flexDirection: 'row', gap: 8, paddingHorizontal: spacing.xl, paddingBottom: 2 },
-  chip: { flexDirection: 'row', alignItems: 'center', gap: 6, paddingHorizontal: 13, paddingVertical: 8, borderRadius: 20, backgroundColor: colors.chip, borderWidth: 1.5, borderColor: 'transparent' },
+  chip: { flexDirection: 'row', alignItems: 'center', gap: 6, paddingHorizontal: 13, paddingVertical: 8, borderRadius: 20, backgroundColor: colors.chip, borderWidth: 1.5, borderColor: colors.inputBorder },
   chipActive: { backgroundColor: colors.greenSoft, borderColor: colors.green },
   chipDot: { width: 8, height: 8, borderRadius: 4 },
   chipTxt: { fontSize: fontSize.sm, fontWeight: fontWeight.semibold, color: colors.muted },
@@ -148,7 +154,7 @@ const styles = StyleSheet.create({
   group: { marginTop: 22 },
   groupLabel: { fontSize: fontSize.xs, fontWeight: fontWeight.bold, color: colors.muted, textTransform: 'uppercase', letterSpacing: 0.8, marginBottom: 10 },
   groupItems: { gap: 8 },
-  harvestRow: { flexDirection: 'row', alignItems: 'center', gap: 13, backgroundColor: colors.card, borderWidth: 1, borderColor: colors.line, borderRadius: 18, padding: 13, paddingHorizontal: 14 },
+  harvestRow: { flexDirection: 'row', alignItems: 'center', gap: 13, backgroundColor: colors.card, borderWidth: 1, borderColor: colors.inputBorder, borderRadius: 18, padding: 13, paddingHorizontal: 14 },
   badge: { width: 44, height: 44, borderRadius: 14, alignItems: 'center', justifyContent: 'center', flexShrink: 0 },
   badgeTxt: { color: '#fff', fontWeight: fontWeight.bold, fontSize: fontSize.xl },
   harvestMeta: { flex: 1, minWidth: 0 },

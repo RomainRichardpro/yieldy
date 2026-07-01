@@ -56,7 +56,7 @@ export default function RentaScreen() {
       <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
         {/* Header */}
         <View style={styles.headerRow}>
-          <Text style={styles.h1}>Rentabilité</Text>
+          <Text style={styles.h1} accessibilityRole="header">Rentabilité</Text>
           {coutTotal > 0 && (
             <View style={[styles.badge, rentable ? styles.badgeGreen : styles.badgeOrange]}>
               <Text style={[styles.badgeTxt, rentable ? styles.badgeTxtGreen : styles.badgeTxtOrange]}>
@@ -69,7 +69,7 @@ export default function RentaScreen() {
         {coutTotal === 0 && harvests.length === 0 ? (
           <>
             <EmptyState title="Pas encore de données" subtitle="Ajoute des investissements et enregistre des récoltes pour voir ta rentabilité" />
-            <Pressable onPress={() => openInvest()} style={styles.addBtn}>
+            <Pressable onPress={() => openInvest()} style={styles.addBtn} accessibilityRole="button" accessibilityLabel="Ajouter un investissement">
               <Text style={styles.addBtnTxt}>+ Ajouter un investissement</Text>
             </Pressable>
           </>
@@ -104,8 +104,8 @@ export default function RentaScreen() {
 
             {/* Investissements initiaux */}
             <View style={styles.sectionHeader}>
-              <Text style={styles.h2}>Investissements initiaux</Text>
-              <Pressable onPress={() => openInvest('initial')} style={styles.addSmall}>
+              <Text style={styles.h2} accessibilityRole="header">Investissements initiaux</Text>
+              <Pressable onPress={() => openInvest('initial')} style={styles.addSmall} accessibilityRole="button" accessibilityLabel="Ajouter un investissement initial">
                 <Text style={styles.addSmallTxt}>+ Ajouter</Text>
               </Pressable>
             </View>
@@ -115,12 +115,14 @@ export default function RentaScreen() {
                 <Text style={styles.emptySectionTxt}>Aucun investissement initial (matériel, sol, graines…)</Text>
               </View>
             ) : (
-              <View style={styles.list}>
+              <View style={styles.list} accessibilityRole="list">
                 {initiaux.map(i => (
                   <Pressable
                     key={i.id}
                     onPress={() => openInvest('initial', i.id, { libelle: i.libelle, montant: String(i.montant) })}
                     style={styles.investRow}
+                    accessibilityRole="button"
+                    accessibilityLabel={`Modifier ${i.libelle}, ${i.montant} euros`}
                   >
                     <View style={styles.investIcon}><Text style={{ fontSize: 18 }}>🌱</Text></View>
                     <Text style={styles.investLabel}>{i.libelle}</Text>
@@ -136,8 +138,8 @@ export default function RentaScreen() {
 
             {/* Coûts récurrents */}
             <View style={[styles.sectionHeader, { marginTop: 22 }]}>
-              <Text style={styles.h2}>Coûts récurrents</Text>
-              <Pressable onPress={() => openInvest('recurrent')} style={styles.addSmall}>
+              <Text style={styles.h2} accessibilityRole="header">Coûts récurrents</Text>
+              <Pressable onPress={() => openInvest('recurrent')} style={styles.addSmall} accessibilityRole="button" accessibilityLabel="Ajouter un coût récurrent">
                 <Text style={styles.addSmallTxt}>+ Ajouter</Text>
               </Pressable>
             </View>
@@ -147,12 +149,14 @@ export default function RentaScreen() {
                 <Text style={styles.emptySectionTxt}>Aucun coût récurrent cette saison (eau, semences, engrais…)</Text>
               </View>
             ) : (
-              <View style={styles.list}>
+              <View style={styles.list} accessibilityRole="list">
                 {recurrents.map(i => (
                   <Pressable
                     key={i.id}
                     onPress={() => openInvest('recurrent', i.id, { libelle: i.libelle, montant: String(i.montant) })}
                     style={styles.investRow}
+                    accessibilityRole="button"
+                    accessibilityLabel={`Modifier ${i.libelle}, ${i.montant} euros`}
                   >
                     <View style={styles.investIcon}><Text style={{ fontSize: 18 }}>💧</Text></View>
                     <Text style={styles.investLabel}>{i.libelle}</Text>
@@ -191,7 +195,7 @@ const styles = StyleSheet.create({
   badgeOrange: { backgroundColor: colors.accentSoft },
   badgeTxt: { fontSize: fontSize.sm, fontWeight: fontWeight.bold },
   badgeTxtGreen: { color: colors.green },
-  badgeTxtOrange: { color: colors.accent },
+  badgeTxtOrange: { color: colors.accentDark },
   chartCard: { backgroundColor: colors.card, borderWidth: 1, borderColor: colors.line, borderRadius: 22, padding: 18, paddingBottom: 14 },
   cardTitle: { fontSize: fontSize.lg, fontWeight: fontWeight.bold, color: colors.ink },
   cardSub: { fontSize: 12.5, color: colors.muted, fontWeight: fontWeight.medium, marginTop: 2 },
@@ -203,7 +207,7 @@ const styles = StyleSheet.create({
   miniCardValue: { fontSize: fontSize.h2, fontWeight: fontWeight.extrabold, color: colors.ink, marginTop: 4, letterSpacing: -0.3 },
   miniCardSub: { fontSize: fontSize.xs, color: colors.muted, fontWeight: fontWeight.medium, marginTop: 3 },
   sectionHeader: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: 22, marginBottom: 10 },
-  addSmall: { backgroundColor: colors.greenSoft, paddingHorizontal: 12, paddingVertical: 7, borderRadius: 12 },
+  addSmall: { backgroundColor: colors.greenSoft, paddingHorizontal: 12, paddingVertical: 7, borderRadius: 12, borderWidth: 1, borderColor: colors.inputBorder },
   addSmallTxt: { fontSize: fontSize.sm, fontWeight: fontWeight.bold, color: colors.green },
   list: { backgroundColor: colors.card, borderWidth: 1, borderColor: colors.line, borderRadius: 20 },
   investRow: { flexDirection: 'row', alignItems: 'center', gap: 12, padding: 14, borderBottomWidth: 1, borderBottomColor: colors.line },

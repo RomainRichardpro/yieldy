@@ -1,4 +1,4 @@
-import { View, Text, TextInput, Pressable, StyleSheet } from 'react-native';
+import { View, Text, TextInput, Pressable, StyleSheet, AccessibilityInfo } from 'react-native';
 import Sheet from '../ui/Sheet';
 import { useAppStore } from '../../store/useAppStore';
 import { colors, spacing, radius, fontSize, fontWeight } from '../../utils/tokens';
@@ -21,16 +21,18 @@ export default function BacSheet({ seasonLegumes, onSave, onDelete }: Props) {
     await onSave({
       id: bacEditId ?? `bac_${Date.now()}`,
       nom: bacForm.nom.trim(),
-      l: Number(bacForm.l) || 0,
-      L: Number(bacForm.L) || 0,
+      larg: Number(bacForm.larg) || 0,
+      long: Number(bacForm.long) || 0,
       contenu: bacForm.contenu,
     });
+    AccessibilityInfo.announceForAccessibility('Bac enregistré');
     closeBac();
   }
 
   async function handleDelete() {
     if (!bacEditId || !onDelete) return;
     await onDelete(bacEditId);
+    AccessibilityInfo.announceForAccessibility('Bac supprimé');
     closeBac();
   }
 
@@ -38,7 +40,7 @@ export default function BacSheet({ seasonLegumes, onSave, onDelete }: Props) {
     <Sheet visible={bacOpen} onClose={closeBac} scrollable>
       <View style={styles.header}>
         <Text style={styles.title}>{bacEditId ? 'Modifier le bac' : 'Nouveau bac'}</Text>
-        <Pressable onPress={closeBac} style={styles.closeBtn}>
+        <Pressable onPress={closeBac} style={({ focused }) => [styles.closeBtn, focused && { borderColor: colors.green, borderWidth: 2 }]} accessibilityLabel="Fermer" accessibilityRole="button">
           <Text style={styles.closeTxt}>✕</Text>
         </Pressable>
       </View>
@@ -50,6 +52,8 @@ export default function BacSheet({ seasonLegumes, onSave, onDelete }: Props) {
         onChangeText={v => setBacForm({ nom: v })}
         placeholder="ex : Bac surélevé sud"
         placeholderTextColor={colors.muted}
+        textContentType="none"
+        accessibilityLabel="Nom du bac"
       />
 
       <View style={styles.row}>
@@ -57,22 +61,26 @@ export default function BacSheet({ seasonLegumes, onSave, onDelete }: Props) {
           <Text style={styles.label}>Largeur (cm)</Text>
           <TextInput
             style={styles.input}
-            value={bacForm.l}
-            onChangeText={v => setBacForm({ l: v })}
+            value={bacForm.larg}
+            onChangeText={v => setBacForm({ larg: v })}
             placeholder="—"
             placeholderTextColor={colors.muted}
             keyboardType="numeric"
+            textContentType="none"
+            accessibilityLabel="Largeur en centimètres"
           />
         </View>
         <View style={{ flex: 1 }}>
           <Text style={styles.label}>Longueur (cm)</Text>
           <TextInput
             style={styles.input}
-            value={bacForm.L}
-            onChangeText={v => setBacForm({ L: v })}
+            value={bacForm.long}
+            onChangeText={v => setBacForm({ long: v })}
             placeholder="—"
             placeholderTextColor={colors.muted}
             keyboardType="numeric"
+            textContentType="none"
+            accessibilityLabel="Longueur en centimètres"
           />
         </View>
       </View>
@@ -88,6 +96,9 @@ export default function BacSheet({ seasonLegumes, onSave, onDelete }: Props) {
                   key={l.id}
                   onPress={() => toggleBacContenu(l.id)}
                   style={[styles.chip, on && styles.chipActive]}
+                  accessibilityRole="checkbox"
+                  accessibilityLabel={l.nom}
+                  accessibilityState={{ checked: on }}
                 >
                   <View style={[styles.dot, { backgroundColor: l.color }]}>
                     <Text style={styles.dotTxt}>{initial(l.nom)}</Text>
@@ -100,12 +111,12 @@ export default function BacSheet({ seasonLegumes, onSave, onDelete }: Props) {
         </>
       )}
 
-      <Pressable onPress={handleSave} style={[styles.saveBtn, !canSave && styles.saveBtnDisabled]}>
+      <Pressable onPress={handleSave} style={[styles.saveBtn, !canSave && styles.saveBtnDisabled]} accessibilityRole="button" accessibilityLabel="Enregistrer le bac" accessibilityState={{ disabled: !canSave }} accessibilityHint={!canSave ? 'Renseigne le nom du bac pour valider' : undefined}>
         <Text style={styles.saveTxt}>Enregistrer</Text>
       </Pressable>
 
       {bacEditId && onDelete && (
-        <Pressable onPress={handleDelete} style={styles.deleteBtn}>
+        <Pressable onPress={handleDelete} style={styles.deleteBtn} accessibilityRole="button" accessibilityLabel="Supprimer ce bac">
           <Text style={styles.deleteTxt}>Supprimer ce bac</Text>
         </Pressable>
       )}
@@ -116,13 +127,13 @@ export default function BacSheet({ seasonLegumes, onSave, onDelete }: Props) {
 const styles = StyleSheet.create({
   header: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: spacing.lg },
   title: { fontSize: fontSize.h2, fontWeight: fontWeight.bold, color: colors.ink, letterSpacing: -0.5 },
-  closeBtn: { backgroundColor: colors.chip, width: 34, height: 34, borderRadius: radius.sm, alignItems: 'center', justifyContent: 'center' },
+  closeBtn: { backgroundColor: colors.chip, width: 44, height: 44, borderRadius: radius.sm, alignItems: 'center', justifyContent: 'center', borderWidth: 1, borderColor: colors.inputBorder },
   closeTxt: { color: colors.muted, fontSize: 16 },
   label: { fontSize: fontSize.sm, fontWeight: fontWeight.semibold, color: colors.muted, marginBottom: 6, marginTop: spacing.md },
-  input: { backgroundColor: colors.card, borderWidth: 1, borderColor: colors.line, borderRadius: radius.md, padding: spacing.md, fontSize: fontSize.lg, fontWeight: fontWeight.semibold, color: colors.ink },
+  input: { backgroundColor: colors.card, borderWidth: 1, borderColor: colors.inputBorder, borderRadius: radius.md, padding: spacing.md, fontSize: fontSize.lg, fontWeight: fontWeight.semibold, color: colors.ink },
   row: { flexDirection: 'row', gap: 10 },
   chips: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
-  chip: { flexDirection: 'row', alignItems: 'center', gap: 8, borderWidth: 1.5, borderColor: colors.line, backgroundColor: colors.card, paddingRight: 13, paddingLeft: 9, paddingVertical: 8, borderRadius: 14 },
+  chip: { flexDirection: 'row', alignItems: 'center', gap: 8, borderWidth: 1.5, borderColor: colors.inputBorder, backgroundColor: colors.card, paddingRight: 13, paddingLeft: 9, paddingVertical: 8, borderRadius: 14 },
   chipActive: { borderColor: colors.green, backgroundColor: colors.greenSoft },
   dot: { width: 24, height: 24, borderRadius: 8, alignItems: 'center', justifyContent: 'center' },
   dotTxt: { color: '#fff', fontSize: fontSize.base, fontWeight: fontWeight.bold },

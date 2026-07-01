@@ -14,8 +14,8 @@ export interface Legume {
 export interface Bac {
   id: string;
   nom: string;
-  l: number;
-  L: number;
+  larg: number;
+  long: number;
   contenu: string[]; // legume ids
 }
 

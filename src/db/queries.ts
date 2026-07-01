@@ -47,15 +47,15 @@ export async function getBacs(): Promise<Bac[]> {
   const contenuData = await db.select().from(bac_legumes);
   return bacsData.map(b => ({
     ...b,
-    l: b.l ?? 0,
-    L: b.L ?? 0,
+    larg: b.larg ?? 0,
+    long: b.long ?? 0,
     contenu: contenuData.filter(c => c.bac_id === b.id).map(c => c.legume_id),
   }));
 }
 
 export async function upsertBac(data: Bac): Promise<void> {
-  await db.insert(bacs).values({ id: data.id, nom: data.nom, l: data.l, L: data.L })
-    .onConflictDoUpdate({ target: bacs.id, set: { nom: data.nom, l: data.l, L: data.L } });
+  await db.insert(bacs).values({ id: data.id, nom: data.nom, larg: data.larg, long: data.long })
+    .onConflictDoUpdate({ target: bacs.id, set: { nom: data.nom, larg: data.larg, long: data.long } });
   await db.delete(bac_legumes).where(eq(bac_legumes.bac_id, data.id));
   for (const lid of data.contenu) {
     await db.insert(bac_legumes).values({ bac_id: data.id, legume_id: lid });

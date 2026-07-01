@@ -1,5 +1,5 @@
 import { View, StyleSheet } from 'react-native';
-import { Svg, Circle, G } from 'react-native-svg';
+import { Svg, Circle } from 'react-native-svg';
 import { colors } from '../../utils/tokens';
 
 interface Slice {
@@ -12,9 +12,10 @@ interface Props {
   total: number;
   size?: number;
   strokeWidth?: number;
+  accessibilityLabel?: string;
 }
 
-export default function DonutChart({ slices, total, size = 160, strokeWidth = 20 }: Props) {
+export default function DonutChart({ slices, total, size = 160, strokeWidth = 20, accessibilityLabel }: Props) {
   const R = (size - strokeWidth) / 2;
   const cx = size / 2;
   const cy = size / 2;
@@ -45,8 +46,8 @@ export default function DonutChart({ slices, total, size = 160, strokeWidth = 20
   });
 
   return (
-    <View style={{ width: size, height: size }}>
-      <Svg width={size} height={size}>
+    <View style={{ width: size, height: size }} accessibilityRole="image" accessibilityLabel={accessibilityLabel ?? 'Graphique en anneau'} importantForAccessibility="yes">
+      <Svg width={size} height={size} accessible={false}>
         {/* Track */}
         <Circle
           cx={cx}

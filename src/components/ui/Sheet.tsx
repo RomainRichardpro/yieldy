@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
-import { Modal, View, Animated, Pressable, StyleSheet, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
-import { colors, spacing, radius } from '../../utils/tokens';
+import { Modal, View, Animated, Pressable, StyleSheet, ScrollView, KeyboardAvoidingView, Platform, useWindowDimensions } from 'react-native';
+import { colors, spacing } from '../../utils/tokens';
 
 interface SheetProps {
   visible: boolean;
@@ -11,6 +11,8 @@ interface SheetProps {
 
 export default function Sheet({ visible, onClose, children, scrollable = false }: SheetProps) {
   const translateY = useRef(new Animated.Value(800)).current;
+  const { height: screenHeight } = useWindowDimensions();
+  const sheetHeight = screenHeight * 0.88;
 
   useEffect(() => {
     Animated.spring(translateY, {
@@ -21,24 +23,29 @@ export default function Sheet({ visible, onClose, children, scrollable = false }
     }).start();
   }, [visible]);
 
-  const Content = scrollable ? ScrollView : View;
-
   return (
-    <Modal visible={visible} transparent animationType="none" onRequestClose={onClose} statusBarTranslucent>
+    <Modal visible={visible} transparent animationType="none" onRequestClose={onClose} statusBarTranslucent accessibilityViewIsModal={true}>
       <Pressable style={styles.backdrop} onPress={onClose}>
-        <Animated.View style={[styles.sheet, { transform: [{ translateY }] }]}>
-          <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-            <Pressable>
-              <View style={styles.grabber} />
-              <Content
-                style={scrollable ? styles.scrollContent : styles.content}
-                showsVerticalScrollIndicator={false}
-                keyboardShouldPersistTaps="handled"
-              >
-                {children}
-              </Content>
-            </Pressable>
-          </KeyboardAvoidingView>
+        <Animated.View style={[styles.sheet, { height: sheetHeight, transform: [{ translateY }] }]}>
+          <View style={{ flex: 1 }} onStartShouldSetResponder={() => true}>
+            <View style={styles.grabber} />
+            <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={{ flex: 1 }}>
+              {scrollable ? (
+                <ScrollView
+                  style={{ flex: 1 }}
+                  contentContainerStyle={styles.scrollContentContainer}
+                  showsVerticalScrollIndicator={false}
+                  keyboardShouldPersistTaps="handled"
+                >
+                  {children}
+                </ScrollView>
+              ) : (
+                <View style={styles.content}>
+                  {children}
+                </View>
+              )}
+            </KeyboardAvoidingView>
+          </View>
         </Animated.View>
       </Pressable>
     </Modal>
@@ -55,7 +62,6 @@ const styles = StyleSheet.create({
     backgroundColor: colors.surface,
     borderTopLeftRadius: 30,
     borderTopRightRadius: 30,
-    maxHeight: '92%',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: -20 },
     shadowOpacity: 0.3,
@@ -75,7 +81,7 @@ const styles = StyleSheet.create({
     padding: spacing.xl,
     paddingBottom: spacing.xxxl,
   },
-  scrollContent: {
+  scrollContentContainer: {
     paddingHorizontal: spacing.xl,
     paddingBottom: spacing.xxxl,
   },

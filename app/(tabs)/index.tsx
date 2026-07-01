@@ -1,12 +1,10 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { View, Text, ScrollView, Pressable, StyleSheet } from 'react-native';
 import { useFocusEffect } from 'expo-router';
 import { colors, spacing, radius, fontSize, fontWeight, shadows } from '../../src/utils/tokens';
 import { fmt, fmt0, initial, valeurRecolte, qtyLabel, relDate } from '../../src/utils/format';
 import { getLegumes, getBacs, getHarvests, getInvest, getActiveSeason } from '../../src/db/queries';
 import { useAppStore } from '../../src/store/useAppStore';
-import HarvestSheet from '../../src/components/sheets/HarvestSheet';
-import { upsertHarvest, deleteHarvest, getSeasonLegumeIds } from '../../src/db/queries';
 import EmptyState from '../../src/components/ui/EmptyState';
 import type { Legume, Bac, Harvest, Invest } from '../../src/types';
 
@@ -16,20 +14,25 @@ export default function AccueilScreen() {
   const [harvests, setHarvests] = useState<Harvest[]>([]);
   const [invest, setInvest] = useState<Invest[]>([]);
   const [activeSeason, setActiveSeason] = useState<number | null>(null);
-  const [seasonLegumeIds, setSeasonLegumeIds] = useState<string[]>([]);
-  const { openHarvest } = useAppStore();
+  const { openHarvest, harvestOpen } = useAppStore();
+  const prevHarvestOpen = useRef(harvestOpen);
 
   async function load() {
     const s = await getActiveSeason();
     if (!s) return;
     setActiveSeason(s.id);
-    const [l, b, h, inv, ids] = await Promise.all([
-      getLegumes(), getBacs(), getHarvests(s.id), getInvest(), getSeasonLegumeIds(s.id)
+    const [l, b, h, inv] = await Promise.all([
+      getLegumes(), getBacs(), getHarvests(s.id), getInvest()
     ]);
-    setLegumes(l); setBacs(b); setHarvests(h); setInvest(inv); setSeasonLegumeIds(ids);
+    setLegumes(l); setBacs(b); setHarvests(h); setInvest(inv);
   }
 
   useFocusEffect(useCallback(() => { load(); }, []));
+
+  useEffect(() => {
+    if (prevHarvestOpen.current && !harvestOpen) load();
+    prevHarvestOpen.current = harvestOpen;
+  }, [harvestOpen]);
 
   if (!activeSeason) return null;
 
@@ -45,7 +48,6 @@ export default function AccueilScreen() {
   const rentable = cum >= cout && cout > 0;
 
   const recent = harvests.slice(0, 3);
-  const seasonLegumes = legumes.filter(l => seasonLegumeIds.includes(l.id));
 
   return (
     <View style={styles.container}>
@@ -55,7 +57,7 @@ export default function AccueilScreen() {
         <View style={styles.headerRow}>
           <View>
             <Text style={styles.greeting}>Bonjour 🌱</Text>
-            <Text style={styles.h1}>Ton potager</Text>
+            <Text style={styles.h1} accessibilityRole="header">Ton potager</Text>
           </View>
           <View style={styles.seasonBadge}>
             <Text style={styles.seasonBadgeTxt}>Saison {activeSeason}</Text>
@@ -108,19 +110,19 @@ export default function AccueilScreen() {
 
         {/* Dernières récoltes */}
         <View style={styles.sectionHeader}>
-          <Text style={styles.h2}>Dernières récoltes</Text>
+          <Text style={styles.h2} accessibilityRole="header">Dernières récoltes</Text>
         </View>
 
         {recent.length === 0 ? (
           <EmptyState title="Aucune récolte" subtitle="Appuie sur + pour enregistrer ta première récolte" />
         ) : (
-          <View style={styles.list}>
+          <View style={styles.list} accessibilityRole="list">
             {recent.map(h => {
               const l = legMap[h.legume_id];
               const b = bacMap[h.bac_id ?? ''];
               if (!l) return null;
               return (
-                <Pressable key={h.id} onPress={() => openHarvest(h.id, { date: h.date, legume_id: h.legume_id, qty: h.qty, poids: h.poids ? String(h.poids) : '', longueur: h.longueur ? String(h.longueur) : '', variete: h.variete ?? '', bac_id: h.bac_id ?? null, notes: h.notes ?? '' })} style={styles.harvestRow}>
+                <Pressable key={h.id} onPress={() => openHarvest(h.id, { date: h.date, legume_id: h.legume_id, qty: h.qty, poids: h.poids ? String(h.poids) : '', longueur: h.longueur ? String(h.longueur) : '', variete: h.variete ?? '', bac_id: h.bac_id ?? null, notes: h.notes ?? '' })} style={styles.harvestRow} accessibilityRole="button" accessibilityLabel={`Modifier la récolte de ${legMap[h.legume_id]?.nom ?? 'légume'}`}>
                   <View style={[styles.badge, { backgroundColor: l.color }]}>
                     <Text style={styles.badgeTxt}>{initial(l.nom)}</Text>
                   </View>
@@ -136,20 +138,13 @@ export default function AccueilScreen() {
         )}
 
         {/* Add button */}
-        <Pressable onPress={() => openHarvest()} style={styles.addBtn}>
+        <Pressable onPress={() => openHarvest()} style={styles.addBtn} accessibilityRole="button" accessibilityLabel="Enregistrer une récolte">
           <Text style={styles.addBtnTxt}>+ Enregistrer une récolte</Text>
         </Pressable>
 
         <View style={{ height: 120 }} />
       </ScrollView>
 
-      <HarvestSheet
-        seasonLegumes={seasonLegumes}
-        bacs={bacs}
-        activeSeason={activeSeason}
-        onSave={async (h) => { await upsertHarvest(h); await load(); }}
-        onDelete={async (id) => { await deleteHarvest(id); await load(); }}
-      />
     </View>
   );
 }
@@ -177,7 +172,7 @@ const styles = StyleSheet.create({
   rentaHeader: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
   rentaTitle: { fontSize: 14.5, fontWeight: fontWeight.bold, color: colors.ink },
   rentaBadge: { backgroundColor: colors.accentSoft, paddingHorizontal: 11, paddingVertical: 5, borderRadius: 20 },
-  rentaBadgeTxt: { fontSize: fontSize.xs, fontWeight: fontWeight.bold, color: colors.accent },
+  rentaBadgeTxt: { fontSize: fontSize.xs, fontWeight: fontWeight.bold, color: colors.accentDark },
   progressTrack: { height: 11, borderRadius: 8, backgroundColor: colors.chip, marginTop: 14, overflow: 'hidden' },
   progressFill: { height: '100%', minWidth: 8, backgroundColor: colors.green, borderRadius: 8 },
   rentaFooter: { flexDirection: 'row', justifyContent: 'space-between', marginTop: 10 },
@@ -185,7 +180,7 @@ const styles = StyleSheet.create({
   rentaReste: { fontSize: 12.5, color: colors.muted, marginTop: 8 },
   sectionHeader: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: 26, marginBottom: 10 },
   list: { gap: 10 },
-  harvestRow: { flexDirection: 'row', alignItems: 'center', gap: 14, backgroundColor: colors.card, borderWidth: 1, borderColor: colors.line, borderRadius: 18, padding: 13, paddingHorizontal: 15 },
+  harvestRow: { flexDirection: 'row', alignItems: 'center', gap: 14, backgroundColor: colors.card, borderWidth: 1, borderColor: colors.inputBorder, borderRadius: 18, padding: 13, paddingHorizontal: 15 },
   badge: { width: 44, height: 44, borderRadius: 14, alignItems: 'center', justifyContent: 'center', flexShrink: 0 },
   badgeTxt: { color: '#fff', fontWeight: fontWeight.bold, fontSize: fontSize.xl },
   harvestMeta: { flex: 1, minWidth: 0 },
