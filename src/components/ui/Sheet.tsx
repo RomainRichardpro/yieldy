@@ -27,9 +27,11 @@ export default function Sheet({ visible, onClose, children, scrollable = false }
     <Modal visible={visible} transparent animationType="none" onRequestClose={onClose} statusBarTranslucent>
       <Pressable style={styles.backdrop} onPress={onClose}>
         <Animated.View style={[styles.sheet, { transform: [{ translateY }] }]}>
-          <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={{ flex: 1 }}>
-            <Pressable style={{ flex: 1 }}>
-              <View style={styles.grabber} />
+          <Pressable>
+            <View style={styles.grabber} />
+          </Pressable>
+          <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+            <Pressable>
               <Content
                 style={scrollable ? styles.scrollContent : styles.content}
                 contentContainerStyle={scrollable ? styles.scrollContentContainer : undefined}
@@ -77,10 +79,11 @@ const styles = StyleSheet.create({
     paddingBottom: spacing.xxxl,
   },
   scrollContent: {
-    flex: 1,
+    maxHeight: '85%',
+    paddingHorizontal: spacing.xl,
+    paddingBottom: spacing.xxxl,
   },
   scrollContentContainer: {
-    paddingHorizontal: spacing.xl,
     paddingBottom: spacing.xxxl,
   },
 });
