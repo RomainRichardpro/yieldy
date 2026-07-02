@@ -1,4 +1,5 @@
-import { View, Text, TextInput, Pressable, StyleSheet, ScrollView, Alert, AccessibilityInfo } from 'react-native';
+import { useState } from 'react';
+import { View, Text, TextInput, Pressable, StyleSheet, ScrollView, AccessibilityInfo } from 'react-native';
 import Sheet from '../ui/Sheet';
 import { useAppStore } from '../../store/useAppStore';
 import { colors, spacing, radius, fontSize, fontWeight } from '../../utils/tokens';
@@ -15,6 +16,7 @@ interface Props {
 
 export default function HarvestSheet({ seasonLegumes, bacs, onSave, onDelete, activeSeason }: Props) {
   const { harvestOpen, harvestEditId, harvestForm, closeHarvest, setHarvestForm, incQty } = useAppStore();
+  const [saveError, setSaveError] = useState('');
 
   const selLeg = seasonLegumes.find(l => l.id === harvestForm.legume_id);
   const showLong = selLeg && (selLeg.id.includes('courgette') || selLeg.id.includes('concombre'));
@@ -26,6 +28,7 @@ export default function HarvestSheet({ seasonLegumes, bacs, onSave, onDelete, ac
 
   async function handleSave() {
     if (!canSave) return;
+    setSaveError('');
     try {
       await onSave({
         id: harvestEditId ?? `h_${Date.now()}`,
@@ -42,7 +45,7 @@ export default function HarvestSheet({ seasonLegumes, bacs, onSave, onDelete, ac
       AccessibilityInfo.announceForAccessibility('Récolte enregistrée');
       closeHarvest();
     } catch (e: any) {
-      Alert.alert('Erreur', e?.message ?? String(e));
+      setSaveError(e?.message ?? 'Une erreur est survenue lors de l\'enregistrement.');
     }
   }
 
@@ -158,6 +161,7 @@ export default function HarvestSheet({ seasonLegumes, bacs, onSave, onDelete, ac
       <Text style={styles.label}>Notes</Text>
       <TextInput style={[styles.input, styles.textarea]} value={harvestForm.notes} onChangeText={v => setHarvestForm({ notes: v })} placeholder="Une remarque sur cette récolte…" placeholderTextColor={colors.muted} multiline numberOfLines={2} textContentType="none" accessibilityLabel="Notes" />
 
+      {saveError ? <Text accessibilityRole="alert" style={styles.errorMsg}>{saveError}</Text> : null}
       <Pressable onPress={handleSave} style={[styles.saveBtn, !canSave && styles.saveBtnDisabled]} accessibilityRole="button" accessibilityLabel={harvestEditId ? 'Enregistrer les modifications' : 'Valider la récolte'} accessibilityState={{ disabled: !canSave }} accessibilityHint={!canSave ? 'Sélectionne un légume pour valider' : undefined}>
         <Text style={styles.saveTxt}>{harvestEditId ? 'Enregistrer les modifications' : 'Valider la récolte'}</Text>
       </Pressable>
@@ -211,6 +215,7 @@ const styles = StyleSheet.create({
   bacChipTxt: { fontSize: fontSize.md, fontWeight: fontWeight.bold, color: colors.ink },
   deleteBtn: { alignItems: 'center', padding: spacing.md, marginTop: spacing.base },
   deleteTxt: { fontSize: fontSize.md, fontWeight: fontWeight.bold, color: colors.destructive },
+  errorMsg: { fontSize: fontSize.sm, color: colors.accent, fontWeight: fontWeight.semibold, marginTop: spacing.base, paddingHorizontal: 2 },
   saveBtn: { backgroundColor: colors.green, borderRadius: radius.xl, padding: 17, alignItems: 'center', marginTop: spacing.base },
   saveBtnDisabled: { backgroundColor: '#b9bcae' },
   saveTxt: { color: '#fff', fontSize: fontSize.xl, fontWeight: fontWeight.bold },
