@@ -25,35 +25,35 @@ export default function Sheet({ visible, onClose, children, scrollable = false }
 
   return (
     <Modal visible={visible} transparent animationType="none" onRequestClose={onClose} statusBarTranslucent accessibilityViewIsModal={true}>
-      <Pressable style={styles.backdrop} onPress={onClose}>
+      <View style={styles.container}>
+        {/* Backdrop — frère de la sheet, pas parent */}
+        <Pressable style={StyleSheet.absoluteFill} onPress={onClose} accessible={false} />
         <Animated.View style={[styles.sheet, { height: sheetHeight, transform: [{ translateY }] }]}>
-          <View style={{ flex: 1 }} onStartShouldSetResponder={() => true}>
-            <View style={styles.grabber} />
-            <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={{ flex: 1 }}>
-              {scrollable ? (
-                <ScrollView
-                  style={{ flex: 1 }}
-                  contentContainerStyle={styles.scrollContentContainer}
-                  showsVerticalScrollIndicator={false}
-                  keyboardShouldPersistTaps="handled"
-                >
-                  {children}
-                </ScrollView>
-              ) : (
-                <View style={styles.content}>
-                  {children}
-                </View>
-              )}
-            </KeyboardAvoidingView>
-          </View>
+          <View style={styles.grabber} />
+          <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={{ flex: 1 }}>
+            {scrollable ? (
+              <ScrollView
+                style={{ flex: 1 }}
+                contentContainerStyle={styles.scrollContentContainer}
+                showsVerticalScrollIndicator={false}
+                keyboardShouldPersistTaps="handled"
+              >
+                {children}
+              </ScrollView>
+            ) : (
+              <View style={styles.content}>
+                {children}
+              </View>
+            )}
+          </KeyboardAvoidingView>
         </Animated.View>
-      </Pressable>
+      </View>
     </Modal>
   );
 }
 
 const styles = StyleSheet.create({
-  backdrop: {
+  container: {
     flex: 1,
     backgroundColor: 'rgba(20,28,16,0.42)',
     justifyContent: 'flex-end',
