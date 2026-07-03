@@ -73,7 +73,7 @@ export default function RecapScreen() {
       <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
         {/* Header */}
         <View style={styles.headerRow}>
-          <Text style={styles.h1}>Récap</Text>
+          <Text style={styles.h1} accessibilityRole="header">Récap</Text>
           <View style={styles.seasonBadge}>
             <Text style={styles.seasonBadgeTxt}>Saison {activeSeason}</Text>
           </View>
@@ -89,7 +89,13 @@ export default function RecapScreen() {
               <Text style={styles.cardTotal}>{fmt(totalValeur)} récoltés au total</Text>
               <View style={styles.donutRow}>
                 <View style={styles.donutWrap}>
-                  <DonutChart slices={donutSlices} total={totalValeur} size={154} strokeWidth={22} />
+                  <DonutChart
+                    slices={donutSlices}
+                    total={totalValeur}
+                    size={154}
+                    strokeWidth={22}
+                    accessibilityLabel={`Graphique donut : ${legList.slice(0, 6).map(ls => `${ls.legume.nom} ${Math.round((ls.valeur / totalValeur) * 100)}%`).join(', ')}`}
+                  />
                   <View style={styles.donutCenter}>
                     <Text style={styles.donutCenterNum}>{harvests.length}</Text>
                     <Text style={styles.donutCenterLabel}>récoltes</Text>
@@ -112,7 +118,7 @@ export default function RecapScreen() {
 
             {/* Top légume trophy */}
             {top && (
-              <View style={styles.trophyCard}>
+              <View style={styles.trophyCard} accessible={true} accessibilityLabel={`Légume star : ${top.legume.nom}, ${fmt(top.valeur)}, ${Math.round(top.count)} unités récoltées`}>
                 <Text style={styles.trophyEmoji}>🏆</Text>
                 <View style={{ flex: 1 }}>
                   <Text style={styles.trophySub}>Légume star de la saison</Text>
@@ -123,12 +129,15 @@ export default function RecapScreen() {
             )}
 
             {/* Détail par légume */}
-            <Text style={styles.h2}>Détail par légume</Text>
-            <View style={styles.card}>
+            <Text style={styles.h2} accessibilityRole="header">Détail par légume</Text>
+            <View style={styles.card} accessibilityRole="list">
               {legList.map((ls, i) => {
                 const pct = totalValeur > 0 ? (ls.valeur / totalValeur) * 100 : 0;
                 return (
-                  <View key={ls.legume.id} style={[styles.legRow, i < legList.length - 1 && styles.legRowBorder]}>
+                  <View key={ls.legume.id} style={[styles.legRow, i < legList.length - 1 && styles.legRowBorder]}
+                    accessible={true}
+                    accessibilityLabel={`${ls.legume.nom}, ${fmt(ls.valeur)}, ${Math.round(pct)} pourcents du total`}
+                  >
                     <View style={[styles.badge, { backgroundColor: ls.legume.color }]}>
                       <Text style={styles.badgeTxt}>{initial(ls.legume.nom)}</Text>
                     </View>
@@ -149,10 +158,13 @@ export default function RecapScreen() {
             {/* Performance par bac */}
             {bacList.length > 0 && (
               <>
-                <Text style={[styles.h2, { marginTop: 22 }]}>Performance par bac</Text>
-                <View style={styles.card}>
+                <Text style={[styles.h2, { marginTop: 22 }]} accessibilityRole="header">Performance par bac</Text>
+                <View style={styles.card} accessibilityRole="list">
                   {bacList.map((bs, i) => (
-                    <View key={bs.bac.id} style={[styles.bacRow, i < bacList.length - 1 && styles.legRowBorder]}>
+                    <View key={bs.bac.id} style={[styles.bacRow, i < bacList.length - 1 && styles.legRowBorder]}
+                      accessible={true}
+                      accessibilityLabel={`${bs.bac.nom}, ${bs.count} récolte${bs.count > 1 ? 's' : ''}, ${fmt(bs.valeur)}`}
+                    >
                       <View style={styles.bacIcon}>
                         <Text style={styles.bacIconTxt}>🌿</Text>
                       </View>
