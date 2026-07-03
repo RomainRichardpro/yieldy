@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { View, Text, TextInput, Pressable, StyleSheet, ScrollView, AccessibilityInfo } from 'react-native';
+import DateTimePicker from '@react-native-community/datetimepicker';
 import Sheet from '../ui/Sheet';
 import { useAppStore } from '../../store/useAppStore';
 import { colors, spacing, radius, fontSize, fontWeight } from '../../utils/tokens';
@@ -68,8 +69,18 @@ export default function HarvestSheet({ seasonLegumes, bacs, onSave, onDelete, ac
 
       {/* Date */}
       <View style={styles.dateRow}>
-        <Text style={styles.dateLabel}>Date</Text>
-        <Text style={styles.dateValue}>{longDate(harvestForm.date)}</Text>
+        <Text style={styles.dateLabel}>Date de récolte</Text>
+        <DateTimePicker
+          value={new Date(harvestForm.date)}
+          mode="date"
+          display="compact"
+          maximumDate={new Date()}
+          locale="fr-FR"
+          onChange={(_, selected) => {
+            if (selected) setHarvestForm({ date: selected.toISOString().split('T')[0] });
+          }}
+          accessibilityLabel="Date de la récolte"
+        />
       </View>
 
       {/* Légume */}
