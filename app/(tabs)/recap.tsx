@@ -3,7 +3,7 @@ import { View, Text, ScrollView, StyleSheet } from 'react-native';
 import { useFocusEffect } from 'expo-router';
 import { colors, spacing, radius, fontSize, fontWeight } from '../../src/utils/tokens';
 import { fmt, fmt0, initial, valeurRecolte } from '../../src/utils/format';
-import { getLegumes, getBacs, getHarvests, getActiveSeason } from '../../src/db/queries';
+import { getLegumes, getBacs, getHarvests, getActiveSeason } from '../../src/lib/queries';
 import DonutChart from '../../src/components/charts/DonutChart';
 import EmptyState from '../../src/components/ui/EmptyState';
 import type { Legume, Bac, Harvest } from '../../src/types';

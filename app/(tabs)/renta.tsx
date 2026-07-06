@@ -3,7 +3,7 @@ import { View, Text, ScrollView, Pressable, StyleSheet, useWindowDimensions } fr
 import { useFocusEffect } from 'expo-router';
 import { colors, spacing, radius, fontSize, fontWeight } from '../../src/utils/tokens';
 import { fmt, fmt0, valeurRecolte } from '../../src/utils/format';
-import { getLegumes, getHarvests, getInvest, getActiveSeason, upsertInvest, deleteInvest } from '../../src/db/queries';
+import { getLegumes, getHarvests, getInvest, getActiveSeason, upsertInvest, deleteInvest } from '../../src/lib/queries';
 import { useAppStore } from '../../src/store/useAppStore';
 import LineChart from '../../src/components/charts/LineChart';
 import InvestSheet from '../../src/components/sheets/InvestSheet';

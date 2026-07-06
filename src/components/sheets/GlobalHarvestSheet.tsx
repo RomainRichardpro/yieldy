@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useAppStore } from '../../store/useAppStore';
-import { getLegumes, getBacs, getSeasonLegumeIds, getActiveSeason, upsertHarvest, deleteHarvest } from '../../db/queries';
+import { getLegumes, getBacs, getSeasonLegumeIds, getActiveSeason, upsertHarvest, deleteHarvest } from '../../lib/queries';
 import HarvestSheet from './HarvestSheet';
 import type { Legume, Bac } from '../../types';
 
