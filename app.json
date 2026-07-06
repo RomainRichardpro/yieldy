@@ -2,12 +2,14 @@
   "expo": {
     "name": "Glean",
     "slug": "glean",
+    "scheme": "glean",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.anonymous.glean"
     },
     "android": {
       "adaptiveIcon": {
@@ -25,7 +27,8 @@
       "expo-router",
       "expo-sqlite",
       "expo-status-bar",
-      "expo-font"
+      "expo-font",
+      "@react-native-community/datetimepicker"
     ]
   }
 }

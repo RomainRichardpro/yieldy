@@ -13,22 +13,24 @@ export const colors = {
 
   // Content
   ink:         '#25301f',  // primary text
-  muted:       '#74795f',  // secondary text, labels, placeholders
+  muted:       '#676c52',  // secondary text — 4.92:1 on surface, 4.74:1 on chip (WCAG AA)
 
   // Brand green
-  green:       '#4a7c42',  // primary action, active state, positive value
+  green:       '#457339',  // primary action — 5.03:1 on surface, 4.73:1 on greenSoft (WCAG AA)
   greenDeep:   '#2f5a2c',  // pressed state, dark variant
   greenSoft:   '#e7efe0',  // green tint background (chips, highlights)
-  greenShadow: 'rgba(74, 124, 66, 0.7)',  // green button shadow
+  greenShadow: 'rgba(69, 115, 57, 0.7)',  // green button shadow
 
   // Accent orange-red
-  accent:      '#c2562f',  // warning, "not yet profitable", destructive
+  accent:      '#b04518',  // warning — 5.10:1 on surface, 4.49:1 on accentSoft (WCAG AA)
   accentSoft:  '#f3e2d6',  // accent tint background
 
   // Structural
-  line:        '#e8e3d4',  // borders, dividers
+  line:        '#e8e3d4',  // decorative dividers, list separators
+  inputBorder: '#7d7869',  // interactive component boundaries (inputs, chips, rows) — 4.41:1 on white, 3.97:1 on surface (WCAG 1.4.11)
   white:       '#ffffff',
   destructive: '#c2403a',  // delete actions
+  accentDark:  '#8b3612',  // accent text on accentSoft background — 6.32:1 (WCAG AA)
 } as const;
 
 // ─── Spacing ──────────────────────────────────────────────────────────────────

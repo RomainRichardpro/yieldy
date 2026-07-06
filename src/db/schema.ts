@@ -18,8 +18,8 @@ export const legumes = sqliteTable('legumes', {
 export const bacs = sqliteTable('bacs', {
   id:  text('id').primaryKey(),
   nom: text('nom').notNull(),
-  l:   real('l').default(0),            // largeur en cm
-  L:   real('L').default(0),            // longueur en cm
+  larg: real('larg').default(0),            // largeur en cm
+  long: real('long').default(0),            // longueur en cm
 });
 
 // ─── Légumes d'un bac ────────────────────────────────────────────────────────
