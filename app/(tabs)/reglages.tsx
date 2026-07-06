@@ -3,7 +3,7 @@ import { View, Text, ScrollView, Pressable, StyleSheet, Switch } from 'react-nat
 import { useFocusEffect } from 'expo-router';
 import { colors, spacing, radius, fontSize, fontWeight } from '../../src/utils/tokens';
 import { initial, fmt } from '../../src/utils/format';
-import { getLegumes, getBacs, getSeasons, getActiveSeason, createSeason, setActiveSeason as dbSetActiveSeason, upsertLegume, deleteLegume, upsertBac, deleteBac, getSeasonLegumeIds, toggleSeasonLegume } from '../../src/db/queries';
+import { getLegumes, getBacs, getSeasons, getActiveSeason, createSeason, setActiveSeason as dbSetActiveSeason, upsertLegume, deleteLegume, upsertBac, deleteBac, getSeasonLegumeIds, toggleSeasonLegume } from '../../src/lib/queries';
 import { useAppStore } from '../../src/store/useAppStore';
 import LegumeSheet from '../../src/components/sheets/LegumeSheet';
 import BacSheet from '../../src/components/sheets/BacSheet';

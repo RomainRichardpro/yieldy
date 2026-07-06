@@ -1,42 +1,59 @@
 import { useEffect, useState } from 'react';
 import { View, ActivityIndicator } from 'react-native';
-import { Stack } from 'expo-router';
+import { Stack, router } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
-import { useMigrations } from 'drizzle-orm/expo-sqlite/migrator';
-import { db } from '../src/db/client';
-import { initDatabase } from '../src/db/init';
-import migrations from '../src/db/migrations/migrations';
+import { supabase } from '../src/lib/supabase';
+import { initUserData } from '../src/lib/init';
 import { colors } from '../src/utils/tokens';
+import type { Session } from '@supabase/supabase-js';
 
 export default function RootLayout() {
-  const { success, error } = useMigrations(db, migrations);
+  const [session, setSession] = useState<Session | null | undefined>(undefined);
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
-    if (!success) return;
-    initDatabase().then(() => setReady(true));
-  }, [success]);
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+    });
 
-  // Migrations failed — should never happen in prod but helps during dev
-  if (error) {
-    console.error('Migration error:', error);
-  }
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+    });
 
-  // Show a neutral splash while DB is initializing
-  if (!ready) {
-    return (
-      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: colors.surface }}>
-        <ActivityIndicator color={colors.green} />
-      </View>
-    );
-  }
+    return () => subscription.unsubscribe();
+  }, []);
+
+  useEffect(() => {
+    if (session === undefined) return;
+    if (!session) {
+      setReady(true);
+      return;
+    }
+    setReady(false);
+    initUserData().then(() => setReady(true)).catch(console.error);
+  }, [session]);
+
+  useEffect(() => {
+    if (!ready) return;
+    if (session) {
+      router.replace('/(tabs)');
+    } else {
+      router.replace('/login');
+    }
+  }, [ready, session]);
 
   return (
     <>
       <StatusBar style="dark" />
       <Stack screenOptions={{ headerShown: false }}>
         <Stack.Screen name="(tabs)" />
+        <Stack.Screen name="login" />
       </Stack>
+      {!ready && (
+        <View style={{ position: 'absolute', inset: 0, alignItems: 'center', justifyContent: 'center', backgroundColor: colors.surface }}>
+          <ActivityIndicator color={colors.green} />
+        </View>
+      )}
     </>
   );
 }

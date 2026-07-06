@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { Modal, View, Animated, Pressable, StyleSheet, ScrollView, KeyboardAvoidingView, Platform, useWindowDimensions } from 'react-native';
+import { Modal, View, Animated, PanResponder, Pressable, StyleSheet, ScrollView, KeyboardAvoidingView, Platform, useWindowDimensions } from 'react-native';
 import { colors, spacing } from '../../utils/tokens';
 
 interface SheetProps {
@@ -11,25 +11,53 @@ interface SheetProps {
 
 export default function Sheet({ visible, onClose, children, scrollable = false }: SheetProps) {
   const translateY = useRef(new Animated.Value(800)).current;
+  const pan = useRef(new Animated.Value(0)).current;
   const { height: screenHeight } = useWindowDimensions();
   const sheetHeight = screenHeight * 0.88;
 
   useEffect(() => {
-    Animated.spring(translateY, {
-      toValue: visible ? 0 : 800,
-      useNativeDriver: true,
-      damping: 20,
-      stiffness: 200,
-    }).start();
+    if (visible) {
+      pan.setValue(0);
+      translateY.setValue(800);
+      Animated.spring(translateY, {
+        toValue: 0,
+        useNativeDriver: true,
+        damping: 20,
+        stiffness: 200,
+      }).start();
+    }
+    // Fermeture : le swipe anime via pan, le backdrop est instantané (animationType="none")
   }, [visible]);
+
+  const panResponder = useRef(
+    PanResponder.create({
+      onStartShouldSetPanResponder: () => true,
+      onMoveShouldSetPanResponder: (_, gs) => gs.dy > 2,
+      onPanResponderMove: (_, gs) => {
+        if (gs.dy > 0) pan.setValue(gs.dy);
+      },
+      onPanResponderRelease: (_, gs) => {
+        if (gs.dy > 120 || gs.vy > 0.8) {
+          Animated.timing(pan, { toValue: 800, duration: 220, useNativeDriver: true }).start(() => {
+            onClose();
+          });
+        } else {
+          Animated.spring(pan, { toValue: 0, useNativeDriver: true, damping: 20, stiffness: 300 }).start();
+        }
+      },
+    })
+  ).current;
 
   return (
     <Modal visible={visible} transparent animationType="none" onRequestClose={onClose} statusBarTranslucent accessibilityViewIsModal={true}>
       <View style={styles.container}>
         {/* Backdrop — frère de la sheet, pas parent */}
         <Pressable style={StyleSheet.absoluteFill} onPress={onClose} accessible={false} />
-        <Animated.View style={[styles.sheet, { height: sheetHeight, transform: [{ translateY }] }]}>
-          <View style={styles.grabber} />
+        <Animated.View style={[styles.sheet, { height: sheetHeight, transform: [{ translateY: Animated.add(translateY, pan) }] }]}>
+          {/* Zone de drag physiquement grande — le grabberBar n'est que visuel */}
+          <View style={styles.dragZone} {...panResponder.panHandlers}>
+            <View style={styles.grabberBar} />
+          </View>
           <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={{ flex: 1 }}>
             {scrollable ? (
               <ScrollView
@@ -68,14 +96,18 @@ const styles = StyleSheet.create({
     shadowRadius: 50,
     elevation: 24,
   },
-  grabber: {
+  dragZone: {
+    alignSelf: 'stretch',
+    alignItems: 'center',
+    paddingTop: 14,
+    paddingBottom: 10,
+    paddingHorizontal: 60,
+  },
+  grabberBar: {
     width: 42,
     height: 5,
     borderRadius: 3,
     backgroundColor: colors.line,
-    alignSelf: 'center',
-    marginTop: spacing.md,
-    marginBottom: spacing.sm,
   },
   content: {
     padding: spacing.xl,

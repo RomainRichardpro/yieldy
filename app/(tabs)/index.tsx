@@ -3,7 +3,7 @@ import { View, Text, ScrollView, Pressable, StyleSheet } from 'react-native';
 import { useFocusEffect } from 'expo-router';
 import { colors, spacing, radius, fontSize, fontWeight, shadows } from '../../src/utils/tokens';
 import { fmt, fmt0, initial, valeurRecolte, qtyLabel, relDate } from '../../src/utils/format';
-import { getLegumes, getBacs, getHarvests, getInvest, getActiveSeason } from '../../src/db/queries';
+import { getLegumes, getBacs, getHarvests, getInvest, getActiveSeason } from '../../src/lib/queries';
 import { useAppStore } from '../../src/store/useAppStore';
 import EmptyState from '../../src/components/ui/EmptyState';
 import type { Legume, Bac, Harvest, Invest } from '../../src/types';
