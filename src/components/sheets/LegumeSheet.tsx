@@ -16,14 +16,14 @@ interface Props {
 export default function LegumeSheet({ onSave, onDelete }: Props) {
   const { legumeOpen, legumeEditId, legumeForm, closeLegume, setLegumeForm, onLegumeNom } = useAppStore();
 
-  const canSave = legumeForm.nom.trim().length > 0 && Number(legumeForm.prix) > 0;
+  const canSave = legumeForm.nom.trim().length > 0 && Number(legumeForm.prix.replace(',', '.')) > 0;
 
   async function handleSave() {
     if (!canSave) return;
     await onSave({
       id: legumeEditId ?? `leg_${Date.now()}`,
       nom: legumeForm.nom.trim(),
-      prix: Number(legumeForm.prix),
+      prix: Number(legumeForm.prix.replace(',', '.')),
       unite: legumeForm.unite as Unite,
       source: legumeForm.source.trim() || null,
       color: legumeForm.color,

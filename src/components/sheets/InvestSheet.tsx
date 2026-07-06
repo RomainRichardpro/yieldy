@@ -14,7 +14,7 @@ interface Props {
 export default function InvestSheet({ seasonLabel, onSave, onDelete, activeSeason }: Props) {
   const { investOpen, investEditId, investForm, closeInvest, setInvestForm } = useAppStore();
 
-  const canSave = investForm.libelle.trim().length > 0 && Number(investForm.montant) > 0;
+  const canSave = investForm.libelle.trim().length > 0 && Number(investForm.montant.replace(',', '.')) > 0;
 
   async function handleSave() {
     if (!canSave) return;
@@ -22,7 +22,7 @@ export default function InvestSheet({ seasonLabel, onSave, onDelete, activeSeaso
       id: investEditId ?? `inv_${Date.now()}`,
       type: investForm.type as InvestType,
       libelle: investForm.libelle.trim(),
-      montant: Number(investForm.montant),
+      montant: Number(investForm.montant.replace(',', '.')),
       season_id: investForm.type === 'recurrent' ? activeSeason : null,
     });
     AccessibilityInfo.announceForAccessibility('Coût enregistré');

@@ -20,7 +20,7 @@ export default function HarvestSheet({ seasonLegumes, bacs, onSave, onDelete, ac
   const [saveError, setSaveError] = useState('');
 
   const selLeg = seasonLegumes.find(l => l.id === harvestForm.legume_id);
-  const showLong = selLeg && (selLeg.id.includes('courgette') || selLeg.id.includes('concombre'));
+  const showLong = true;
   const estValeur = selLeg
     ? fmt(valeurRecolte({ id: '', date: '', season_id: activeSeason, qty: harvestForm.qty, poids: harvestForm.poids ? Number(harvestForm.poids) : null, legume_id: selLeg.id }, selLeg))
     : '—';
