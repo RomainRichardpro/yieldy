@@ -35,7 +35,7 @@ export default function LoginScreen() {
     <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
       <View style={styles.inner}>
         <Text style={styles.logo}>🌱</Text>
-        <Text style={styles.title}>Glean</Text>
+        <Text style={styles.title}>Yieldy Garden</Text>
         <Text style={styles.subtitle}>Ton journal de récoltes</Text>
 
         <Text style={styles.label}>Adresse email</Text>

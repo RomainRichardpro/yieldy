@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "Glean",
+    "name": "Yieldy Garden",
     "slug": "glean",
     "scheme": "glean",
     "version": "1.0.0",
@@ -9,7 +9,10 @@
     "userInterfaceStyle": "light",
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.anonymous.glean"
+      "bundleIdentifier": "com.romainrichard.glean",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -29,6 +32,11 @@
       "expo-status-bar",
       "expo-font",
       "@react-native-community/datetimepicker"
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "0a9d1fff-f2e0-484f-a13f-54e660ad3bd6"
+      }
+    }
   }
 }

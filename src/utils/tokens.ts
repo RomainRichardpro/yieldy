@@ -1,4 +1,4 @@
-// ─── Glean Design Tokens ──────────────────────────────────────────────────────
+// ─── Yieldy Design Tokens ──────────────────────────────────────────────────────
 // Single source of truth for all visual decisions.
 // Never hardcode colors, spacing, or typography in components — import from here.
 
