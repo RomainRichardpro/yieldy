@@ -16,6 +16,12 @@
     }
   },
   "submit": {
-    "production": {}
+    "production": {
+      "ios": {
+        "ascApiKeyPath": "/Users/romainrichard/Downloads/AuthKey_WFZTJWQPUM.p8",
+        "ascApiKeyIssuerId": "84064c94-f584-43b2-91a8-4a9171737113",
+        "ascApiKeyId": "WFZTJWQPUM"
+      }
+    }
   }
 }
