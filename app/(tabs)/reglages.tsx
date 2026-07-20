@@ -1,5 +1,7 @@
 import { useCallback, useState } from 'react';
-import { View, Text, ScrollView, Pressable, StyleSheet, Switch } from 'react-native';
+import { View, Text, ScrollView, Pressable, StyleSheet, Switch, Alert } from 'react-native';
+import { useRouter } from 'expo-router';
+import { supabase } from '../../src/lib/supabase';
 import { useFocusEffect } from 'expo-router';
 import { colors, spacing, radius, fontSize, fontWeight } from '../../src/utils/tokens';
 import { initial, fmt } from '../../src/utils/format';
@@ -16,7 +18,37 @@ export default function ReglagesScreen() {
   const [seasons, setSeasons] = useState<Season[]>([]);
   const [activeSeason, setActiveSeason] = useState<number | null>(null);
   const [seasonLegumeIds, setSeasonLegumeIds] = useState<string[]>([]);
+  const [deletingAccount, setDeletingAccount] = useState(false);
   const { openLegume, openBac } = useAppStore();
+  const router = useRouter();
+
+  async function handleDeleteAccount() {
+    Alert.alert(
+      'Supprimer mon compte',
+      'Toutes tes données (récoltes, légumes, bacs, saisons) seront définitivement supprimées. Cette action est irréversible.',
+      [
+        { text: 'Annuler', style: 'cancel' },
+        {
+          text: 'Supprimer',
+          style: 'destructive',
+          onPress: async () => {
+            setDeletingAccount(true);
+            try {
+              await supabase.rpc('delete_user');
+              await supabase.auth.signOut();
+            } catch (e) {
+              setDeletingAccount(false);
+              Alert.alert('Erreur', 'Impossible de supprimer le compte. Réessaie plus tard.');
+            }
+          },
+        },
+      ]
+    );
+  }
+
+  async function handleSignOut() {
+    await supabase.auth.signOut();
+  }
 
   async function load() {
     const [l, b, s, a] = await Promise.all([getLegumes(), getBacs(), getSeasons(), getActiveSeason()]);
@@ -106,6 +138,15 @@ export default function ReglagesScreen() {
               })}
             </View>
         }
+        <Text style={[styles.sectionCap, { marginTop: spacing.xxl }]}>Compte</Text>
+        <Pressable onPress={handleSignOut} style={styles.accountBtn} accessibilityRole="button" accessibilityLabel="Se déconnecter">
+          <Text style={styles.accountBtnTxt}>Se déconnecter</Text>
+        </Pressable>
+        <Pressable onPress={handleDeleteAccount} style={[styles.accountBtn, styles.deleteBtn]} accessibilityRole="button" accessibilityLabel="Supprimer mon compte" disabled={deletingAccount}>
+          <Text style={styles.deleteBtnTxt}>{deletingAccount ? 'Suppression…' : 'Supprimer mon compte'}</Text>
+        </Pressable>
+        <Text style={styles.deleteHint}>Supprime définitivement ton compte et toutes tes données.</Text>
+
         <View style={{ height: 40 }} />
       </ScrollView>
 
@@ -145,4 +186,9 @@ const styles = StyleSheet.create({
   bacIcon: { width: 38, height: 38, borderRadius: 12, backgroundColor: colors.greenSoft, alignItems: 'center', justifyContent: 'center' },
   bacContenu: { fontSize: fontSize.xs, color: colors.green, fontWeight: fontWeight.semibold, marginTop: 3 },
   chevron: { fontSize: 20, color: colors.muted },
+  accountBtn: { backgroundColor: colors.card, borderWidth: 1, borderColor: colors.inputBorder, borderRadius: radius.lg, padding: spacing.base, alignItems: 'center', marginBottom: 10 },
+  accountBtnTxt: { fontSize: fontSize.base, fontWeight: fontWeight.semibold, color: colors.ink },
+  deleteBtn: { borderColor: colors.destructive, backgroundColor: '#fff5f5' },
+  deleteBtnTxt: { fontSize: fontSize.base, fontWeight: fontWeight.semibold, color: colors.destructive },
+  deleteHint: { fontSize: fontSize.xs, color: colors.muted, textAlign: 'center', marginTop: 2 },
 });
