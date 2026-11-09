@@ -14,6 +14,9 @@ export default function RootLayout() {
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
+    }).catch((e) => {
+      console.error(e);
+      setSession(null);
     });
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
@@ -30,7 +33,7 @@ export default function RootLayout() {
       return;
     }
     setReady(false);
-    initUserData().then(() => setReady(true)).catch(console.error);
+    initUserData().catch(console.error).finally(() => setReady(true));
   }, [session]);
 
   useEffect(() => {
