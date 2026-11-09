@@ -89,7 +89,7 @@ export default function ReglagesScreen() {
 
         <View style={styles.sectionHeader}>
           <Text style={styles.h2} accessibilityRole="header">Légumes</Text>
-          <Pressable onPress={() => openLegume()} style={({ focused }) => [styles.addBtn, focused && { borderColor: colors.green, borderWidth: 2 }]} accessibilityRole="button" accessibilityLabel="Ajouter un légume"><Text style={styles.addBtnTxt}>+</Text></Pressable>
+          <Pressable onPress={() => openLegume()} style={({ focused }: { focused?: boolean; pressed: boolean }) => [styles.addBtn, focused && { borderColor: colors.green, borderWidth: 2 }]} accessibilityRole="button" accessibilityLabel="Ajouter un légume"><Text style={styles.addBtnTxt}>+</Text></Pressable>
         </View>
         <Text style={styles.hint}>Active ceux de ton potager {activeSeason ? `Saison ${activeSeason}` : ''}</Text>
 
@@ -116,7 +116,7 @@ export default function ReglagesScreen() {
 
         <View style={styles.sectionHeader}>
           <Text style={styles.h2} accessibilityRole="header">Bacs & zones</Text>
-          <Pressable onPress={() => openBac(undefined, undefined, bacs.length)} style={({ focused }) => [styles.addBtn, focused && { borderColor: colors.green, borderWidth: 2 }]} accessibilityRole="button" accessibilityLabel="Ajouter un bac"><Text style={styles.addBtnTxt}>+</Text></Pressable>
+          <Pressable onPress={() => openBac(undefined, undefined, bacs.length)} style={({ focused }: { focused?: boolean; pressed: boolean }) => [styles.addBtn, focused && { borderColor: colors.green, borderWidth: 2 }]} accessibilityRole="button" accessibilityLabel="Ajouter un bac"><Text style={styles.addBtnTxt}>+</Text></Pressable>
         </View>
 
         {bacs.length === 0

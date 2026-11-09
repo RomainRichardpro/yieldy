@@ -62,7 +62,7 @@ export default function HarvestSheet({ seasonLegumes, bacs, onSave, onDelete, ac
       {/* Header */}
       <View style={styles.header}>
         <Text style={styles.title}>{harvestEditId ? 'Modifier la récolte' : 'Nouvelle récolte'}</Text>
-        <Pressable onPress={closeHarvest} style={({ focused }) => [styles.closeBtn, focused && { borderColor: colors.green, borderWidth: 2 }]} accessibilityLabel="Fermer" accessibilityRole="button">
+        <Pressable onPress={closeHarvest} style={({ focused }: { focused?: boolean; pressed: boolean }) => [styles.closeBtn, focused && { borderColor: colors.green, borderWidth: 2 }]} accessibilityLabel="Fermer" accessibilityRole="button">
           <Text style={styles.closeTxt}>✕</Text>
         </Pressable>
       </View>
