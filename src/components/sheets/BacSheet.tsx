@@ -40,7 +40,7 @@ export default function BacSheet({ seasonLegumes, onSave, onDelete }: Props) {
     <Sheet visible={bacOpen} onClose={closeBac} scrollable>
       <View style={styles.header}>
         <Text style={styles.title}>{bacEditId ? 'Modifier le bac' : 'Nouveau bac'}</Text>
-        <Pressable onPress={closeBac} style={({ focused }) => [styles.closeBtn, focused && { borderColor: colors.green, borderWidth: 2 }]} accessibilityLabel="Fermer" accessibilityRole="button">
+        <Pressable onPress={closeBac} style={({ focused }: { focused?: boolean; pressed: boolean }) => [styles.closeBtn, focused && { borderColor: colors.green, borderWidth: 2 }]} accessibilityLabel="Fermer" accessibilityRole="button">
           <Text style={styles.closeTxt}>✕</Text>
         </Pressable>
       </View>

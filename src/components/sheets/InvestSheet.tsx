@@ -40,7 +40,7 @@ export default function InvestSheet({ seasonLabel, onSave, onDelete, activeSeaso
     <Sheet visible={investOpen} onClose={closeInvest}>
       <View style={styles.header}>
         <Text style={styles.title}>{investEditId ? 'Modifier le coût' : 'Nouveau coût'}</Text>
-        <Pressable onPress={closeInvest} style={({ focused }) => [styles.closeBtn, focused && { borderColor: colors.green, borderWidth: 2 }]} accessibilityLabel="Fermer" accessibilityRole="button">
+        <Pressable onPress={closeInvest} style={({ focused }: { focused?: boolean; pressed: boolean }) => [styles.closeBtn, focused && { borderColor: colors.green, borderWidth: 2 }]} accessibilityLabel="Fermer" accessibilityRole="button">
           <Text style={styles.closeTxt}>✕</Text>
         </Pressable>
       </View>

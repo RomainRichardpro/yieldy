@@ -44,7 +44,7 @@ export default function LegumeSheet({ onSave, onDelete }: Props) {
       {/* Header */}
       <View style={styles.header}>
         <Text style={styles.title}>{legumeEditId ? 'Modifier le légume' : 'Nouveau légume'}</Text>
-        <Pressable onPress={closeLegume} style={({ focused }) => [styles.closeBtn, focused && { borderColor: colors.green, borderWidth: 2 }]} accessibilityLabel="Fermer" accessibilityRole="button">
+        <Pressable onPress={closeLegume} style={({ focused }: { focused?: boolean; pressed: boolean }) => [styles.closeBtn, focused && { borderColor: colors.green, borderWidth: 2 }]} accessibilityLabel="Fermer" accessibilityRole="button">
           <Text style={styles.closeTxt}>✕</Text>
         </Pressable>
       </View>
